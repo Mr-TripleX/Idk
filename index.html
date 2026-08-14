@@ -3,293 +3,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brutalist Habit Tracker</title>
+    <title>Retro-Futuristic Habit Tracker</title>
+    <!-- Font chữ kỹ thuật số hoài cổ -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
-
         :root {
-            /* Nền Dark Xám */
-            --bg: #121212;
-            --surface: #1e1e1e;
-            
-            /* Chữ */
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            
-            /* Color Theory: Neon Accents cho Brutalism */
-            --border: #52525b;       /* Xám viền dày */
-            --accent-cyan: #06b6d4;  /* Xanh lơ */
-            --accent-pink: #ec4899;  /* Hồng đậm */
-            --accent-yellow: #eab308;/* Vàng */
-            --accent-green: #22c55e; /* Xanh lá (Hoàn thành) */
-            --danger: #ef4444;       /* Đỏ */
+            /* Palette từ image_096c57.png */
+            --ashes: #B7B4AE;
+            --light-charcoal: #726E68;
+            --dryad-bark: #33312F;
+            --black-kite: #371E1E;
+            --existential-angst: #0A0A0A;
         }
-        
+
         body {
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--existential-angst);
+            color: var(--ashes);
             margin: 0;
             padding: 30px;
+            /* Hiệu ứng lưới Grid nền của Retro-Futurism */
+            background-image: 
+                linear-gradient(rgba(114, 110, 104, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(114, 110, 104, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            min-height: 100vh;
         }
 
-        h1, h2, h3 { 
-            text-transform: uppercase; 
-            margin-top: 0; 
-            letter-spacing: 1px;
+        h1, h2, h3 {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(183, 180, 174, 0.3);
+            margin-top: 0;
         }
 
-        /* Bố cục Grid 2 cột lấp đầy không gian */
-        .layout-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
+        h1 { text-align: center; font-size: 2.8em; margin-bottom: 30px; color: var(--ashes); }
+
+        /* Bố cục chính */
+        .dashboard {
             max-width: 1400px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr; /* Todo list chiếm phần lớn hơn */
+            gap: 25px;
             align-items: start;
         }
 
-        /* Thẻ Card Brutalism - Vuông vức, bóng cứng, viền dày */
-        .card {
-            background: var(--surface);
-            border: 3px solid var(--text-main);
+        /* Thẻ nội dung (Cards) - Bo góc nhẹ, nền Dryad Bark */
+        .panel {
+            background-color: var(--dryad-bark);
+            border: 1px solid var(--light-charcoal);
+            border-radius: 12px;
             padding: 24px;
-            position: relative;
-        }
-        
-        /* Chơi màu cho từng Card để bớt nhàm chán */
-        .card-habit { box-shadow: 8px 8px 0px var(--accent-cyan); }
-        .card-custom-stats { box-shadow: 8px 8px 0px var(--accent-pink); }
-        .card-weekly-stats { box-shadow: 8px 8px 0px var(--accent-yellow); }
-        .card-todo { box-shadow: 8px 8px 0px var(--accent-green); }
-
-        /* Bảng */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            border: 3px solid var(--text-main);
-        }
-        th, td {
-            border: 2px solid var(--border);
-            padding: 12px;
-            text-align: center;
-        }
-        th { 
-            background-color: var(--border); 
-            color: var(--text-main);
-            text-transform: uppercase;
-        }
-        .text-left { text-align: left; }
-
-        /* Input & Nút bấm Brutalism */
-        input[type="text"], input[type="date"] {
-            padding: 10px;
-            background-color: var(--bg);
-            color: var(--text-main);
-            border: 2px solid var(--text-main);
-            outline: none;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 600;
-        }
-        input[type="text"]:focus, input[type="date"]:focus {
-            background-color: var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(183, 180, 174, 0.03);
+            backdrop-filter: blur(4px);
         }
 
+        .todo-panel {
+            display: flex;
+            flex-direction: column;
+            min-height: 500px; /* Fill dài ra */
+        }
+
+        /* Nút bấm */
         button {
-            padding: 10px 16px;
-            background-color: var(--text-main);
-            color: var(--bg);
-            border: 2px solid var(--text-main);
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
             text-transform: uppercase;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--light-charcoal);
+            background-color: var(--black-kite);
+            color: var(--ashes);
             cursor: pointer;
-            box-shadow: 4px 4px 0px var(--border);
-            transition: transform 0.1s, box-shadow 0.1s;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(55, 30, 30, 0.5);
         }
-        button:active {
-            transform: translate(4px, 4px);
-            box-shadow: 0px 0px 0px var(--border);
+        button:hover {
+            border-color: var(--ashes);
+            box-shadow: 0 0 15px rgba(183, 180, 174, 0.4);
+            text-shadow: 0 0 5px var(--ashes);
         }
-        
-        /* Phối màu nút bấm */
-        .btn-cyan { background: var(--accent-cyan); color: #000; border-color: #000; box-shadow: 4px 4px 0px #000; }
-        .btn-pink { background: var(--accent-pink); color: #fff; border-color: #fff; box-shadow: 4px 4px 0px #fff; }
-        .btn-danger { background: var(--danger); color: #fff; border-color: #fff; box-shadow: 3px 3px 0px #000; padding: 6px 10px; font-size: 12px;}
-
-        /* Custom Checkbox Brutalism */
-        .brutal-checkbox {
-            appearance: none;
-            width: 28px;
-            height: 28px;
-            border: 2px solid var(--text-main);
-            background: var(--bg);
-            cursor: pointer;
-            position: relative;
+        button.btn-danger {
+            background-color: transparent;
+            border: 1px solid var(--light-charcoal);
+            color: var(--light-charcoal);
+            padding: 6px 12px;
+            font-size: 14px;
         }
-        .brutal-checkbox:checked {
-            background: var(--accent-green);
-        }
-        .brutal-checkbox:checked::after {
-            content: '✔';
-            position: absolute;
-            color: #000;
-            font-weight: 900;
-            font-size: 18px;
-            left: 5px;
-            top: 2px;
+        button.btn-danger:hover {
+            border-color: var(--black-kite);
+            color: var(--ashes);
+            background-color: var(--black-kite);
         }
 
-        /* Header Điều khiển tuần */
-        .week-controls {
+        /* Inputs */
+        input[type="text"], input[type="date"] {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px 15px;
+            background-color: var(--existential-angst);
+            border: 1px solid var(--light-charcoal);
+            color: var(--ashes);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input:focus {
+            border-color: var(--ashes);
+            box-shadow: 0 0 10px rgba(183, 180, 174, 0.2);
+        }
+        input::placeholder { color: var(--light-charcoal); }
+
+        /* --- BẢNG HABIT TRACKER --- */
+        .controls-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            padding: 10px;
-            border: 2px solid var(--text-main);
-            background: var(--border);
+            padding: 15px;
+            background: rgba(10, 10, 10, 0.4);
+            border-radius: 8px;
+            border: 1px solid rgba(114, 110, 104, 0.3);
         }
-        .week-controls span { font-weight: bold; font-size: 1.2em; text-transform: uppercase; }
+        #weekDisplay { font-size: 1.4em; font-weight: 700; color: var(--ashes); letter-spacing: 1px;}
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid var(--light-charcoal);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid rgba(114, 110, 104, 0.3);
+            border-right: 1px solid rgba(114, 110, 104, 0.3);
+        }
+        th { background-color: rgba(10, 10, 10, 0.6); font-size: 1.1em; color: var(--ashes); }
+        td:last-child, th:last-child { border-right: none; }
+        tr:last-child td { border-bottom: none; }
+        .text-left { text-align: left; }
 
-        /* Biểu đồ Donut cho Tuần */
-        .stats-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 15px;}
-        .stat-item { width: 100px; text-align: center; }
+        /* Custom Checkbox Retro */
+        .retro-checkbox {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--light-charcoal);
+            border-radius: 6px;
+            background: var(--existential-angst);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+        .retro-checkbox:checked {
+            background: var(--black-kite);
+            border-color: var(--ashes);
+            box-shadow: 0 0 10px rgba(183, 180, 174, 0.3);
+        }
+        .retro-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: var(--ashes);
+            font-size: 18px;
+            font-weight: bold;
+            left: 4px;
+            top: 0px;
+        }
+
+        /* --- THỐNG KÊ --- */
+        .stats-wrapper { display: flex; flex-direction: column; gap: 20px; }
+        .stats-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .stat-item { text-align: center; }
+        
         .donut-chart {
-            width: 80px; height: 80px;
+            width: 70px; height: 70px;
             border-radius: 50%;
-            background: conic-gradient(var(--accent-yellow) var(--p, 0%), var(--bg) 0);
+            background: conic-gradient(var(--black-kite) var(--p, 0%), var(--existential-angst) 0);
             display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 10px; position: relative;
-            border: 2px solid var(--text-main);
+            margin: 0 auto 10px;
+            position: relative;
+            border: 1px solid var(--light-charcoal);
+            box-shadow: 0 0 10px rgba(55, 30, 30, 0.3);
         }
         .donut-chart::before {
             content: ""; position: absolute;
             width: 50px; height: 50px;
-            background: var(--surface); border-radius: 50%;
-            border: 2px solid var(--text-main);
+            background: var(--dryad-bark);
+            border-radius: 50%;
+            border: 1px solid var(--light-charcoal);
         }
-        .donut-chart span { position: relative; font-weight: 700; color: var(--text-main); }
-        
-        /* Thanh tiến trình cho Custom Range */
-        .progress-block { margin-bottom: 15px; }
-        .progress-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px; }
+        .donut-chart span { position: relative; font-weight: 700; font-size: 1.1em;}
+
+        .progress-block { margin-bottom: 12px; }
+        .progress-header { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 5px; font-size: 1.1em;}
         .progress-bar {
-            width: 100%; height: 24px;
-            border: 2px solid var(--text-main);
-            background: var(--bg);
-            position: relative;
+            width: 100%; height: 14px;
+            background: var(--existential-angst);
+            border: 1px solid var(--light-charcoal);
+            border-radius: 8px;
+            overflow: hidden;
         }
         .progress-fill {
-            height: 100%; background: var(--accent-pink);
-            border-right: 2px solid var(--text-main);
+            height: 100%;
+            background: var(--black-kite);
+            box-shadow: 0 0 10px rgba(183, 180, 174, 0.2);
+            transition: width 0.5s ease-out;
         }
 
-        /* Responsive */
+        /* --- TO-DO LIST ĐƯỢC MỞ RỘNG --- */
+        .todo-input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--light-charcoal);
+        }
+        
+        .todo-list-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            max-height: 500px;
+            padding-right: 10px;
+        }
+
+        /* Thanh trượt (Scrollbar) phong cách retro */
+        .todo-list-container::-webkit-scrollbar { width: 6px; }
+        .todo-list-container::-webkit-scrollbar-track { background: var(--existential-angst); border-radius: 4px; }
+        .todo-list-container::-webkit-scrollbar-thumb { background: var(--light-charcoal); border-radius: 4px; }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.5);
+            border: 1px solid var(--light-charcoal);
+            padding: 15px 20px;
+            border-radius: 10px;
+            gap: 20px;
+            transition: background 0.2s;
+        }
+        .todo-item:hover { background: rgba(55, 30, 30, 0.2); border-color: var(--ashes); }
+        .todo-item.done { opacity: 0.6; }
+        .todo-item.done .todo-text { text-decoration: line-through; color: var(--light-charcoal); }
+
+        .todo-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .todo-text { font-size: 1.3em; font-weight: 600; color: var(--ashes); }
+        .todo-note { font-size: 1em; color: var(--light-charcoal); }
+
         @media (max-width: 1024px) {
-            .layout-grid { grid-template-columns: 1fr; }
+            .bottom-section { grid-template-columns: 1fr; }
+            .todo-input-group { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
-<h1 style="text-align: center; font-size: 2.5em; margin-bottom: 30px; text-shadow: 4px 4px 0px var(--accent-cyan);">
-    ⚡ HỆ THỐNG QUẢN LÝ CÁ NHÂN
-</h1>
+<div class="dashboard">
+    <h1>TERMINAL // SYSTEM_TRACKER</h1>
 
-<div class="layout-grid">
-    <!-- CỘT TRÁI: LỊCH CHỈ TIÊU -->
-    <div class="left-col">
-        <div class="card card-habit">
-            <h2>Lịch Theo Dõi Chỉ Tiêu</h2>
-            <div class="week-controls">
-                <button class="btn-cyan" onclick="changeWeek(-1)">&#8592; Tuần trước</button>
-                <span id="weekDisplay">Tuần: ...</span>
-                <button class="btn-cyan" onclick="changeWeek(1)">Tuần sau &#8594;</button>
-            </div>
-            
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <input type="text" id="habitInput" placeholder="Tên chỉ tiêu mới..." style="flex: 1;">
-                <button class="btn-cyan" onclick="addHabit()">Thêm</button>
-            </div>
+    <!-- HÀNG TRÊN: LỊCH CHỈ TIÊU -->
+    <div class="panel">
+        <h2>Lịch Theo Dõi Chỉ Tiêu</h2>
+        
+        <div class="controls-row">
+            <button onclick="changeWeek(-1)">&#9664; Tuần trước</button>
+            <span id="weekDisplay">Tuần: ...</span>
+            <button onclick="changeWeek(1)">Tuần sau &#9654;</button>
+        </div>
+        
+        <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+            <input type="text" id="habitInput" placeholder="Khởi tạo mục tiêu mới..." style="flex: 1; max-width: 400px;">
+            <button onclick="addHabit()">THÊM MỤC TIÊU</button>
+        </div>
 
-            <div style="overflow-x: auto;">
-                <table id="habitTable">
-                    <thead>
-                        <tr id="habitHead">
-                            <th class="text-left" style="width: 250px;">Chỉ tiêu</th>
-                        </tr>
-                    </thead>
-                    <tbody id="habitBody">
-                    </tbody>
-                </table>
-            </div>
+        <div style="overflow-x: auto;">
+            <table id="habitTable">
+                <thead>
+                    <tr id="habitHead">
+                        <th class="text-left" style="width: 250px;">CHỈ TIÊU</th>
+                    </tr>
+                </thead>
+                <tbody id="habitBody">
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- CỘT PHẢI: THỐNG KÊ & TO-DO -->
-    <div class="right-col" style="display: flex; flex-direction: column; gap: 30px;">
+    <!-- HÀNG DƯỚI: CHIA 2 CỘT -->
+    <div class="bottom-section">
         
-        <!-- THỐNG KÊ TÙY CHỈNH (MỚI) -->
-        <div class="card card-custom-stats">
-            <h2>Thống kê theo giai đoạn</h2>
-            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <label style="width: 40px;">Từ:</label>
-                    <input type="date" id="customStart" style="flex: 1;">
+        <!-- Cột Trái: Thống kê -->
+        <div class="stats-wrapper">
+            <!-- Thống kê Tùy chỉnh -->
+            <div class="panel">
+                <h2>Phân Tích Dữ Liệu</h2>
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span style="width: 50px; color: var(--light-charcoal);">BẮT ĐẦU:</span>
+                        <input type="date" id="customStart" style="flex: 1;">
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span style="width: 50px; color: var(--light-charcoal);">KẾT THÚC:</span>
+                        <input type="date" id="customEnd" style="flex: 1;">
+                    </div>
+                    <button onclick="calculateCustomStats()">TRÍCH XUẤT DỮ LIỆU</button>
                 </div>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <label style="width: 40px;">Đến:</label>
-                    <input type="date" id="customEnd" style="flex: 1;">
+                <div id="customStatsResult">
+                    <p style="color: var(--light-charcoal); text-align: center; font-style: italic;">Đang chờ lệnh nhập liệu...</p>
                 </div>
-                <button class="btn-pink" onclick="calculateCustomStats()" style="width: 100%;">Tính Toán %</button>
             </div>
-            <div id="customStatsResult">
-                <p style="color: var(--text-muted); text-align: center; font-style: italic;">Nhập ngày và bấm tính toán...</p>
+
+            <!-- Thống kê Tuần -->
+            <div class="panel">
+                <h2>Hiệu Suất Tuần</h2>
+                <div class="stats-grid" id="weeklyStatsContainer"></div>
             </div>
         </div>
 
-        <!-- THỐNG KÊ TUẦN NÀY -->
-        <div class="card card-weekly-stats">
-            <h2>Hiệu suất tuần này</h2>
-            <div class="stats-grid" id="weeklyStatsContainer">
-            </div>
-        </div>
-
-        <!-- TO-DO LIST -->
-        <div class="card card-todo">
-            <h2>Việc Cần Làm</h2>
-            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                <input type="text" id="todoTask" placeholder="Tên công việc...">
-                <input type="text" id="todoNote" placeholder="Ghi chú (Tùy chọn)...">
-                <button onclick="addTodo()" style="background: var(--accent-green); color: #000;">Thêm Việc</button>
+        <!-- Cột Phải: To-do List Mở rộng -->
+        <div class="panel todo-panel">
+            <h2>Hàng Đợi Nhiệm Vụ (To-Do)</h2>
+            
+            <div class="todo-input-group">
+                <input type="text" id="todoTask" placeholder="Tên nhiệm vụ..." style="flex: 1.5;">
+                <input type="text" id="todoNote" placeholder="Ghi chú dữ liệu..." style="flex: 1;">
+                <button onclick="addTodo()">THÊM</button>
             </div>
             
-            <table style="margin-top: 0;">
-                <thead>
-                    <tr>
-                        <th class="text-left">Việc</th>
-                        <th>Xong</th>
-                        <th>Xóa</th>
-                    </tr>
-                </thead>
-                <tbody id="todoBody">
-                </tbody>
-            </table>
+            <div class="todo-list-container" id="todoBody">
+                <!-- Các Todo Item sẽ được tạo bởi JS ở đây -->
+            </div>
         </div>
 
     </div>
 </div>
 
 <script>
-    // --- DỮ LIỆU ---
+    // --- KHỞI TẠO DỮ LIỆU ---
     let currentStartOfWeek = getStartOfWeek(new Date());
     let habits = JSON.parse(localStorage.getItem('habits')) || [];
     let habitRecords = JSON.parse(localStorage.getItem('habitRecords')) || {}; 
     let todos = JSON.parse(localStorage.getItem('todos')) || [];
 
-    // --- HÀM HỖ TRỢ ---
     function getStartOfWeek(date) {
         let d = new Date(date);
         let day = d.getDay();
@@ -311,7 +385,7 @@
         renderApp();
     }
 
-    // --- HABIT TRACKER ---
+    // --- XỬ LÝ CHỈ TIÊU ---
     function addHabit() {
         const input = document.getElementById('habitInput');
         if (input.value.trim()) {
@@ -323,7 +397,7 @@
     }
 
     function removeHabit(id) {
-        if(confirm("Xóa chỉ tiêu này?")) {
+        if(confirm("Xóa bỏ dữ liệu chỉ tiêu này khỏi hệ thống?")) {
             habits = habits.filter(h => h.id !== id);
             saveData();
             renderApp();
@@ -335,11 +409,10 @@
         habitRecords[key] = !habitRecords[key];
         saveData();
         renderWeeklyStats();
-        // Nếu bảng custom stat đang có kết quả thì cập nhật luôn
         if(document.getElementById('customStart').value) calculateCustomStats();
     }
 
-    // --- TO-DO LIST ---
+    // --- XỬ LÝ TO-DO LIST ---
     function addTodo() {
         const taskInput = document.getElementById('todoTask');
         const noteInput = document.getElementById('todoNote');
@@ -374,14 +447,14 @@
         localStorage.setItem('todos', JSON.stringify(todos));
     }
 
-    // --- TÍNH TOÁN THEO GIAI ĐOẠN TÙY CHỈNH ---
+    // --- TÍNH TOÁN THỐNG KÊ KHOẢNG NGÀY ---
     function calculateCustomStats() {
         const startVal = document.getElementById('customStart').value;
         const endVal = document.getElementById('customEnd').value;
         const container = document.getElementById('customStatsResult');
 
         if (!startVal || !endVal) {
-            container.innerHTML = '<p style="color: var(--danger); font-weight: bold;">[!] Vui lòng chọn đủ 2 mốc ngày.</p>';
+            container.innerHTML = '<p style="color: var(--light-charcoal);">[!] Thiếu tham số ngày tháng.</p>';
             return;
         }
 
@@ -389,16 +462,15 @@
         const endDate = new Date(endVal);
 
         if (startDate > endDate) {
-            container.innerHTML = '<p style="color: var(--danger); font-weight: bold;">[!] Ngày bắt đầu phải trước ngày kết thúc.</p>';
+            container.innerHTML = '<p style="color: var(--light-charcoal);">[!] Lỗi logic: Ngày bắt đầu > Ngày kết thúc.</p>';
             return;
         }
 
         if (habits.length === 0) {
-            container.innerHTML = '<p>Chưa có chỉ tiêu nào.</p>';
+            container.innerHTML = '<p style="color: var(--light-charcoal);">Không có dữ liệu mục tiêu.</p>';
             return;
         }
 
-        // Lấy danh sách chuỗi ngày
         let dates = [];
         let current = new Date(startDate);
         while (current <= endDate) {
@@ -411,17 +483,14 @@
 
         habits.forEach(habit => {
             let doneCount = 0;
-            dates.forEach(dStr => {
-                if (habitRecords[`${habit.id}_${dStr}`]) doneCount++;
-            });
+            dates.forEach(dStr => { if (habitRecords[`${habit.id}_${dStr}`]) doneCount++; });
             let percent = Math.round((doneCount / totalDays) * 100);
             
-            // Thanh Progress Bar phong cách Brutalism
             html += `
             <div class="progress-block">
                 <div class="progress-header">
                     <span>${habit.name}</span>
-                    <span>${percent}% (${doneCount}/${totalDays})</span>
+                    <span style="color: var(--light-charcoal)">${percent}% [${doneCount}/${totalDays}]</span>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: ${percent}%;"></div>
@@ -443,34 +512,33 @@
         let endOfWeek = new Date(currentStartOfWeek);
         endOfWeek.setDate(currentStartOfWeek.getDate() + 6);
         document.getElementById('weekDisplay').innerText = 
-            `${currentStartOfWeek.toLocaleDateString('vi-VN')} - ${endOfWeek.toLocaleDateString('vi-VN')}`;
+            `[ ${currentStartOfWeek.toLocaleDateString('vi-VN')} - ${endOfWeek.toLocaleDateString('vi-VN')} ]`;
 
         const thead = document.getElementById('habitHead');
-        thead.innerHTML = '<th class="text-left" style="width: 250px;">Chỉ tiêu</th>';
+        thead.innerHTML = '<th class="text-left" style="width: 250px;">CHỈ TIÊU</th>';
         
         let weekDates = [];
         for (let i = 0; i < 7; i++) {
             let d = new Date(currentStartOfWeek);
             d.setDate(currentStartOfWeek.getDate() + i);
             weekDates.push(d);
-            thead.innerHTML += `<th>${getDayName(d)}<br><small style="color: var(--accent-cyan); font-weight: bold;">${d.getDate()}/${d.getMonth()+1}</small></th>`;
+            thead.innerHTML += `<th>${getDayName(d)}<br><small style="color: var(--light-charcoal); font-weight: normal;">${d.getDate()}/${d.getMonth()+1}</small></th>`;
         }
 
         const tbody = document.getElementById('habitBody');
         tbody.innerHTML = '';
         
         if (habits.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="color: var(--text-muted);">Trống! Hãy thêm mục tiêu.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" style="color: var(--light-charcoal); padding: 20px;">No targets assigned.</td></tr>`;
         }
 
         habits.forEach(habit => {
             let tr = document.createElement('tr');
-            
             let tdName = document.createElement('td');
             tdName.className = 'text-left';
             tdName.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; font-weight: bold;">
-                    <span>${habit.name}</span>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 600; font-size: 1.1em;">${habit.name}</span>
                     <button class="btn-danger" onclick="removeHabit('${habit.id}')">X</button>
                 </div>
             `;
@@ -481,8 +549,7 @@
                 let dateStr = formatDate(date);
                 let key = `${habit.id}_${dateStr}`;
                 let isChecked = habitRecords[key] ? 'checked' : '';
-                
-                td.innerHTML = `<input type="checkbox" class="brutal-checkbox" ${isChecked} onchange="toggleHabit('${habit.id}', '${dateStr}')">`;
+                td.innerHTML = `<input type="checkbox" class="retro-checkbox" ${isChecked} onchange="toggleHabit('${habit.id}', '${dateStr}')">`;
                 tr.appendChild(td);
             });
             tbody.appendChild(tr);
@@ -492,7 +559,10 @@
     function renderWeeklyStats() {
         const container = document.getElementById('weeklyStatsContainer');
         container.innerHTML = '';
-        if (habits.length === 0) return;
+        if (habits.length === 0) {
+            container.innerHTML = '<p style="color: var(--light-charcoal);">No targets assigned.</p>';
+            return;
+        }
 
         let weekDatesStr = [];
         for (let i = 0; i < 7; i++) {
@@ -514,38 +584,35 @@
                     <div class="donut-chart" style="--p: ${percentage}%">
                         <span>${percentage}%</span>
                     </div>
-                    <div style="font-weight: bold; font-size: 0.9em; line-height: 1.2;">${habit.name}</div>
+                    <div style="font-size: 0.9em; font-weight: 600; color: var(--light-charcoal);">${habit.name}</div>
                 </div>
             `;
         });
     }
 
     function renderTodos() {
-        const tbody = document.getElementById('todoBody');
-        tbody.innerHTML = '';
+        const container = document.getElementById('todoBody');
+        container.innerHTML = '';
 
         if (todos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="3" style="color: var(--text-muted);">Bạn rảnh rỗi!</td></tr>`;
+            container.innerHTML = `<div style="text-align: center; color: var(--light-charcoal); padding: 40px 0; border: 1px dashed var(--light-charcoal); border-radius: 8px;">Hàng đợi trống. Hệ thống rảnh rỗi.</div>`;
         }
 
         todos.forEach(todo => {
-            let tr = document.createElement('tr');
-            let textStyle = todo.done ? 'text-decoration: line-through; color: var(--text-muted); opacity: 0.5;' : 'font-weight: bold;';
-            let noteHtml = todo.note ? `<div style="font-size: 12px; color: var(--accent-yellow); margin-top: 4px; font-weight: normal;">>> ${todo.note}</div>` : '';
+            let itemDiv = document.createElement('div');
+            itemDiv.className = `todo-item ${todo.done ? 'done' : ''}`;
             
-            tr.innerHTML = `
-                <td class="text-left" style="${textStyle}">
-                    ${todo.task}
+            let noteHtml = todo.note ? `<span class="todo-note">>> ${todo.note}</span>` : '';
+            
+            itemDiv.innerHTML = `
+                <input type="checkbox" class="retro-checkbox" ${todo.done ? 'checked' : ''} onchange="toggleTodo('${todo.id}')">
+                <div class="todo-content">
+                    <span class="todo-text">${todo.task}</span>
                     ${noteHtml}
-                </td>
-                <td>
-                    <input type="checkbox" class="brutal-checkbox" ${todo.done ? 'checked' : ''} onchange="toggleTodo('${todo.id}')">
-                </td>
-                <td>
-                    <button class="btn-danger" onclick="removeTodo('${todo.id}')">Xóa</button>
-                </td>
+                </div>
+                <button class="btn-danger" onclick="removeTodo('${todo.id}')">DEL</button>
             `;
-            tbody.appendChild(tr);
+            container.appendChild(itemDiv);
         });
     }
 
