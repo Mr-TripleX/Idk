@@ -3,236 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Công việc & Thói quen (Dark Theme)</title>
+    <title>Brutalist Habit Tracker</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
+
         :root {
-            /* Bảng màu Dark Xám */
-            --primary: #52525b;       /* Xám nhấn cho nút bấm */
-            --primary-hover: #71717a; /* Xám sáng hơn khi di chuột vào nút */
-            --danger: #ef4444;        /* Đỏ cho nút xóa */
-            --danger-hover: #f87171;
-            --success: #10b981;       /* Xanh lá cho phần trăm hoàn thành */
+            /* Nền Dark Xám */
+            --bg: #121212;
+            --surface: #1e1e1e;
             
-            --bg: #121212;            /* Xám đen - Nền trang web */
-            --card: #1e1e1e;          /* Xám đậm - Nền các thẻ nội dung */
-            --text: #e5e5e5;          /* Xám trắng - Chữ chính */
-            --text-muted: #9ca3af;    /* Xám mờ - Chữ phụ, ghi chú */
+            /* Chữ */
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
             
-            --border: #333333;        /* Xám viền */
-            --input-bg: #2d2d2d;      /* Xám nền ô nhập chữ */
-            --th-bg: #2a2a2a;         /* Xám nền tiêu đề bảng */
+            /* Color Theory: Neon Accents cho Brutalism */
+            --border: #52525b;       /* Xám viền dày */
+            --accent-cyan: #06b6d4;  /* Xanh lơ */
+            --accent-pink: #ec4899;  /* Hồng đậm */
+            --accent-yellow: #eab308;/* Vàng */
+            --accent-green: #22c55e; /* Xanh lá (Hoàn thành) */
+            --danger: #ef4444;       /* Đỏ */
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Space Grotesk', sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 30px;
         }
-        .container {
-            max-width: 1000px;
+
+        h1, h2, h3 { 
+            text-transform: uppercase; 
+            margin-top: 0; 
+            letter-spacing: 1px;
+        }
+
+        /* Bố cục Grid 2 cột lấp đầy không gian */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            max-width: 1400px;
             margin: 0 auto;
+            align-items: start;
         }
-        h1, h2 { color: var(--text); }
+
+        /* Thẻ Card Brutalism - Vuông vức, bóng cứng, viền dày */
         .card {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            margin-bottom: 24px;
-            border: 1px solid var(--border);
+            background: var(--surface);
+            border: 3px solid var(--text-main);
+            padding: 24px;
+            position: relative;
         }
         
-        /* Bảng chung */
+        /* Chơi màu cho từng Card để bớt nhàm chán */
+        .card-habit { box-shadow: 8px 8px 0px var(--accent-cyan); }
+        .card-custom-stats { box-shadow: 8px 8px 0px var(--accent-pink); }
+        .card-weekly-stats { box-shadow: 8px 8px 0px var(--accent-yellow); }
+        .card-todo { box-shadow: 8px 8px 0px var(--accent-green); }
+
+        /* Bảng */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 15px;
+            border: 3px solid var(--text-main);
         }
         th, td {
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             padding: 12px;
             text-align: center;
         }
         th { 
-            background-color: var(--th-bg); 
-            color: var(--text);
+            background-color: var(--border); 
+            color: var(--text-main);
+            text-transform: uppercase;
         }
         .text-left { text-align: left; }
-        
-        /* Nút bấm & Input */
-        input[type="text"] {
-            padding: 8px 12px;
-            background-color: var(--input-bg);
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 6px;
+
+        /* Input & Nút bấm Brutalism */
+        input[type="text"], input[type="date"] {
+            padding: 10px;
+            background-color: var(--bg);
+            color: var(--text-main);
+            border: 2px solid var(--text-main);
             outline: none;
-            width: 200px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
         }
-        input[type="text"]::placeholder {
-            color: var(--text-muted);
+        input[type="text"]:focus, input[type="date"]:focus {
+            background-color: var(--border);
         }
-        input[type="text"]:focus {
-            border-color: #71717a;
-        }
-        
+
         button {
-            padding: 8px 16px;
-            background-color: var(--primary);
-            color: var(--text);
-            border: none;
-            border-radius: 6px;
+            padding: 10px 16px;
+            background-color: var(--text-main);
+            color: var(--bg);
+            border: 2px solid var(--text-main);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
             cursor: pointer;
-            transition: background-color 0.2s;
-            font-weight: 500;
+            box-shadow: 4px 4px 0px var(--border);
+            transition: transform 0.1s, box-shadow 0.1s;
         }
-        button:hover { background-color: var(--primary-hover); }
+        button:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px var(--border);
+        }
         
-        button.danger { background-color: var(--danger); color: white; }
-        button.danger:hover { background-color: var(--danger-hover); }
-        
-        /* Điều khiển tuần */
+        /* Phối màu nút bấm */
+        .btn-cyan { background: var(--accent-cyan); color: #000; border-color: #000; box-shadow: 4px 4px 0px #000; }
+        .btn-pink { background: var(--accent-pink); color: #fff; border-color: #fff; box-shadow: 4px 4px 0px #fff; }
+        .btn-danger { background: var(--danger); color: #fff; border-color: #fff; box-shadow: 3px 3px 0px #000; padding: 6px 10px; font-size: 12px;}
+
+        /* Custom Checkbox Brutalism */
+        .brutal-checkbox {
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border: 2px solid var(--text-main);
+            background: var(--bg);
+            cursor: pointer;
+            position: relative;
+        }
+        .brutal-checkbox:checked {
+            background: var(--accent-green);
+        }
+        .brutal-checkbox:checked::after {
+            content: '✔';
+            position: absolute;
+            color: #000;
+            font-weight: 900;
+            font-size: 18px;
+            left: 5px;
+            top: 2px;
+        }
+
+        /* Header Điều khiển tuần */
         .week-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 2px solid var(--text-main);
+            background: var(--border);
         }
-        .week-controls span { font-weight: bold; font-size: 1.1em; color: var(--text); }
-        
-        /* Thống kê - Biểu đồ tròn rỗng */
-        .stats-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 120px;
-        }
+        .week-controls span { font-weight: bold; font-size: 1.2em; text-transform: uppercase; }
+
+        /* Biểu đồ Donut cho Tuần */
+        .stats-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 15px;}
+        .stat-item { width: 100px; text-align: center; }
         .donut-chart {
-            width: 80px;
-            height: 80px;
+            width: 80px; height: 80px;
             border-radius: 50%;
-            /* Nền của biểu đồ trên nền tối */
-            background: conic-gradient(var(--success) var(--p, 0%), var(--border) 0);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            margin-bottom: 10px;
+            background: conic-gradient(var(--accent-yellow) var(--p, 0%), var(--bg) 0);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 10px; position: relative;
+            border: 2px solid var(--text-main);
         }
         .donut-chart::before {
-            content: "";
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: var(--card); /* Đục lỗ màu thẻ card để tạo hiệu ứng rỗng */
-            border-radius: 50%;
+            content: ""; position: absolute;
+            width: 50px; height: 50px;
+            background: var(--surface); border-radius: 50%;
+            border: 2px solid var(--text-main);
         }
-        .donut-chart span {
+        .donut-chart span { position: relative; font-weight: 700; color: var(--text-main); }
+        
+        /* Thanh tiến trình cho Custom Range */
+        .progress-block { margin-bottom: 15px; }
+        .progress-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px; }
+        .progress-bar {
+            width: 100%; height: 24px;
+            border: 2px solid var(--text-main);
+            background: var(--bg);
             position: relative;
-            font-weight: bold;
-            font-size: 14px;
-            color: var(--text);
         }
-        .stat-name {
-            font-size: 0.9em;
-            text-align: center;
-            font-weight: 500;
+        .progress-fill {
+            height: 100%; background: var(--accent-pink);
+            border-right: 2px solid var(--text-main);
         }
 
-        /* Checkbox to */
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: var(--success); /* Đổi màu tick sang xanh */
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .layout-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>📝 Quản Lý Cá Nhân</h1>
+<h1 style="text-align: center; font-size: 2.5em; margin-bottom: 30px; text-shadow: 4px 4px 0px var(--accent-cyan);">
+    ⚡ HỆ THỐNG QUẢN LÝ CÁ NHÂN
+</h1>
 
-    <!-- 1. BẢNG THEO DÕI CHỈ TIÊU (HABIT TRACKER) -->
-    <div class="card">
-        <h2>Theo dõi chỉ tiêu tuần</h2>
-        <div class="week-controls">
-            <button onclick="changeWeek(-1)">&#8592; Tuần trước</button>
-            <span id="weekDisplay">Tuần: ...</span>
-            <button onclick="changeWeek(1)">Tuần sau &#8594;</button>
-        </div>
-        
-        <div style="margin-bottom: 15px;">
-            <input type="text" id="habitInput" placeholder="Nhập tên chỉ tiêu mới...">
-            <button onclick="addHabit()">Thêm chỉ tiêu</button>
-        </div>
+<div class="layout-grid">
+    <!-- CỘT TRÁI: LỊCH CHỈ TIÊU -->
+    <div class="left-col">
+        <div class="card card-habit">
+            <h2>Lịch Theo Dõi Chỉ Tiêu</h2>
+            <div class="week-controls">
+                <button class="btn-cyan" onclick="changeWeek(-1)">&#8592; Tuần trước</button>
+                <span id="weekDisplay">Tuần: ...</span>
+                <button class="btn-cyan" onclick="changeWeek(1)">Tuần sau &#8594;</button>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <input type="text" id="habitInput" placeholder="Tên chỉ tiêu mới..." style="flex: 1;">
+                <button class="btn-cyan" onclick="addHabit()">Thêm</button>
+            </div>
 
-        <div style="overflow-x: auto;">
-            <table id="habitTable">
-                <thead>
-                    <tr id="habitHead">
-                        <th class="text-left" style="width: 200px;">Chỉ tiêu</th>
-                        <!-- Ngày trong tuần sẽ được JS render ở đây -->
-                    </tr>
-                </thead>
-                <tbody id="habitBody">
-                    <!-- Dữ liệu chỉ tiêu sẽ nằm ở đây -->
-                </tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table id="habitTable">
+                    <thead>
+                        <tr id="habitHead">
+                            <th class="text-left" style="width: 250px;">Chỉ tiêu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="habitBody">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- 2. THỐNG KÊ (BIỂU ĐỒ TRÒN RỖNG) -->
-    <div class="card">
-        <h2>Thống kê tuần này</h2>
-        <div class="stats-grid" id="statsContainer">
-            <!-- Biểu đồ được JS render -->
-        </div>
-    </div>
-
-    <!-- 3. DANH SÁCH VIỆC CẦN LÀM (TO-DO LIST) -->
-    <div class="card">
-        <h2>Việc cần làm (To-Do List)</h2>
-        <div style="margin-bottom: 15px; display: flex; gap: 10px;">
-            <input type="text" id="todoTask" placeholder="Việc cần làm..." style="flex: 2;">
-            <input type="text" id="todoNote" placeholder="Ghi chú thêm..." style="flex: 2;">
-            <button onclick="addTodo()" style="flex: 1;">Thêm việc</button>
-        </div>
+    <!-- CỘT PHẢI: THỐNG KÊ & TO-DO -->
+    <div class="right-col" style="display: flex; flex-direction: column; gap: 30px;">
         
-        <div style="overflow-x: auto;">
-            <table>
+        <!-- THỐNG KÊ TÙY CHỈNH (MỚI) -->
+        <div class="card card-custom-stats">
+            <h2>Thống kê theo giai đoạn</h2>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <label style="width: 40px;">Từ:</label>
+                    <input type="date" id="customStart" style="flex: 1;">
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <label style="width: 40px;">Đến:</label>
+                    <input type="date" id="customEnd" style="flex: 1;">
+                </div>
+                <button class="btn-pink" onclick="calculateCustomStats()" style="width: 100%;">Tính Toán %</button>
+            </div>
+            <div id="customStatsResult">
+                <p style="color: var(--text-muted); text-align: center; font-style: italic;">Nhập ngày và bấm tính toán...</p>
+            </div>
+        </div>
+
+        <!-- THỐNG KÊ TUẦN NÀY -->
+        <div class="card card-weekly-stats">
+            <h2>Hiệu suất tuần này</h2>
+            <div class="stats-grid" id="weeklyStatsContainer">
+            </div>
+        </div>
+
+        <!-- TO-DO LIST -->
+        <div class="card card-todo">
+            <h2>Việc Cần Làm</h2>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                <input type="text" id="todoTask" placeholder="Tên công việc...">
+                <input type="text" id="todoNote" placeholder="Ghi chú (Tùy chọn)...">
+                <button onclick="addTodo()" style="background: var(--accent-green); color: #000;">Thêm Việc</button>
+            </div>
+            
+            <table style="margin-top: 0;">
                 <thead>
                     <tr>
-                        <th class="text-left">Việc cần làm</th>
-                        <th class="text-left">Ghi chú</th>
-                        <th>Trạng thái</th>
+                        <th class="text-left">Việc</th>
+                        <th>Xong</th>
                         <th>Xóa</th>
                     </tr>
                 </thead>
                 <tbody id="todoBody">
-                    <!-- Dữ liệu To-do sẽ nằm ở đây -->
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>
 
 <script>
-    // --- KHỞI TẠO DỮ LIỆU ---
+    // --- DỮ LIỆU ---
     let currentStartOfWeek = getStartOfWeek(new Date());
     let habits = JSON.parse(localStorage.getItem('habits')) || [];
-    let habitRecords = JSON.parse(localStorage.getItem('habitRecords')) || {};
+    let habitRecords = JSON.parse(localStorage.getItem('habitRecords')) || {}; 
     let todos = JSON.parse(localStorage.getItem('todos')) || [];
 
-    // --- CÁC HÀM XỬ LÝ NGÀY THÁNG ---
+    // --- HÀM HỖ TRỢ ---
     function getStartOfWeek(date) {
         let d = new Date(date);
         let day = d.getDay();
@@ -257,9 +314,8 @@
     // --- HABIT TRACKER ---
     function addHabit() {
         const input = document.getElementById('habitInput');
-        const name = input.value.trim();
-        if (name) {
-            habits.push({ id: Date.now().toString(), name: name });
+        if (input.value.trim()) {
+            habits.push({ id: Date.now().toString(), name: input.value.trim() });
             input.value = '';
             saveData();
             renderApp();
@@ -267,7 +323,7 @@
     }
 
     function removeHabit(id) {
-        if(confirm("Bạn có chắc muốn xóa chỉ tiêu này?")) {
+        if(confirm("Xóa chỉ tiêu này?")) {
             habits = habits.filter(h => h.id !== id);
             saveData();
             renderApp();
@@ -278,7 +334,9 @@
         const key = `${habitId}_${dateStr}`;
         habitRecords[key] = !habitRecords[key];
         saveData();
-        renderStats();
+        renderWeeklyStats();
+        // Nếu bảng custom stat đang có kết quả thì cập nhật luôn
+        if(document.getElementById('customStart').value) calculateCustomStats();
     }
 
     // --- TO-DO LIST ---
@@ -301,11 +359,7 @@
 
     function toggleTodo(id) {
         const todo = todos.find(t => t.id === id);
-        if (todo) {
-            todo.done = !todo.done;
-            saveData();
-            renderTodos();
-        }
+        if (todo) { todo.done = !todo.done; saveData(); renderTodos(); }
     }
 
     function removeTodo(id) {
@@ -314,42 +368,99 @@
         renderTodos();
     }
 
-    // --- LƯU TRỮ ---
     function saveData() {
         localStorage.setItem('habits', JSON.stringify(habits));
         localStorage.setItem('habitRecords', JSON.stringify(habitRecords));
         localStorage.setItem('todos', JSON.stringify(todos));
     }
 
+    // --- TÍNH TOÁN THEO GIAI ĐOẠN TÙY CHỈNH ---
+    function calculateCustomStats() {
+        const startVal = document.getElementById('customStart').value;
+        const endVal = document.getElementById('customEnd').value;
+        const container = document.getElementById('customStatsResult');
+
+        if (!startVal || !endVal) {
+            container.innerHTML = '<p style="color: var(--danger); font-weight: bold;">[!] Vui lòng chọn đủ 2 mốc ngày.</p>';
+            return;
+        }
+
+        const startDate = new Date(startVal);
+        const endDate = new Date(endVal);
+
+        if (startDate > endDate) {
+            container.innerHTML = '<p style="color: var(--danger); font-weight: bold;">[!] Ngày bắt đầu phải trước ngày kết thúc.</p>';
+            return;
+        }
+
+        if (habits.length === 0) {
+            container.innerHTML = '<p>Chưa có chỉ tiêu nào.</p>';
+            return;
+        }
+
+        // Lấy danh sách chuỗi ngày
+        let dates = [];
+        let current = new Date(startDate);
+        while (current <= endDate) {
+            dates.push(formatDate(current));
+            current.setDate(current.getDate() + 1);
+        }
+        
+        const totalDays = dates.length;
+        let html = '';
+
+        habits.forEach(habit => {
+            let doneCount = 0;
+            dates.forEach(dStr => {
+                if (habitRecords[`${habit.id}_${dStr}`]) doneCount++;
+            });
+            let percent = Math.round((doneCount / totalDays) * 100);
+            
+            // Thanh Progress Bar phong cách Brutalism
+            html += `
+            <div class="progress-block">
+                <div class="progress-header">
+                    <span>${habit.name}</span>
+                    <span>${percent}% (${doneCount}/${totalDays})</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${percent}%;"></div>
+                </div>
+            </div>`;
+        });
+        
+        container.innerHTML = html;
+    }
+
     // --- RENDER GIAO DIỆN ---
     function renderApp() {
-        renderCalendarAndHabits();
-        renderStats();
+        renderCalendar();
+        renderWeeklyStats();
         renderTodos();
     }
 
-    function renderCalendarAndHabits() {
+    function renderCalendar() {
         let endOfWeek = new Date(currentStartOfWeek);
         endOfWeek.setDate(currentStartOfWeek.getDate() + 6);
         document.getElementById('weekDisplay').innerText = 
-            `Từ ${currentStartOfWeek.toLocaleDateString('vi-VN')} đến ${endOfWeek.toLocaleDateString('vi-VN')}`;
+            `${currentStartOfWeek.toLocaleDateString('vi-VN')} - ${endOfWeek.toLocaleDateString('vi-VN')}`;
 
         const thead = document.getElementById('habitHead');
-        thead.innerHTML = '<th class="text-left" style="width: 200px;">Chỉ tiêu</th>';
+        thead.innerHTML = '<th class="text-left" style="width: 250px;">Chỉ tiêu</th>';
         
         let weekDates = [];
         for (let i = 0; i < 7; i++) {
             let d = new Date(currentStartOfWeek);
             d.setDate(currentStartOfWeek.getDate() + i);
             weekDates.push(d);
-            thead.innerHTML += `<th>${getDayName(d)}<br><small style="color: var(--text-muted);">${d.getDate()}/${d.getMonth()+1}</small></th>`;
+            thead.innerHTML += `<th>${getDayName(d)}<br><small style="color: var(--accent-cyan); font-weight: bold;">${d.getDate()}/${d.getMonth()+1}</small></th>`;
         }
 
         const tbody = document.getElementById('habitBody');
         tbody.innerHTML = '';
         
         if (habits.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="color: var(--text-muted);">Chưa có chỉ tiêu nào. Hãy thêm ở trên!</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" style="color: var(--text-muted);">Trống! Hãy thêm mục tiêu.</td></tr>`;
         }
 
         habits.forEach(habit => {
@@ -358,9 +469,9 @@
             let tdName = document.createElement('td');
             tdName.className = 'text-left';
             tdName.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <strong>${habit.name}</strong>
-                    <button class="danger" style="padding: 2px 6px; font-size: 12px;" onclick="removeHabit('${habit.id}')">X</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-weight: bold;">
+                    <span>${habit.name}</span>
+                    <button class="btn-danger" onclick="removeHabit('${habit.id}')">X</button>
                 </div>
             `;
             tr.appendChild(tdName);
@@ -371,21 +482,17 @@
                 let key = `${habit.id}_${dateStr}`;
                 let isChecked = habitRecords[key] ? 'checked' : '';
                 
-                td.innerHTML = `<input type="checkbox" ${isChecked} onchange="toggleHabit('${habit.id}', '${dateStr}')">`;
+                td.innerHTML = `<input type="checkbox" class="brutal-checkbox" ${isChecked} onchange="toggleHabit('${habit.id}', '${dateStr}')">`;
                 tr.appendChild(td);
             });
             tbody.appendChild(tr);
         });
     }
 
-    function renderStats() {
-        const container = document.getElementById('statsContainer');
+    function renderWeeklyStats() {
+        const container = document.getElementById('weeklyStatsContainer');
         container.innerHTML = '';
-
-        if (habits.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted);">Thêm chỉ tiêu để xem thống kê.</p>';
-            return;
-        }
+        if (habits.length === 0) return;
 
         let weekDatesStr = [];
         for (let i = 0; i < 7; i++) {
@@ -397,23 +504,19 @@
         habits.forEach(habit => {
             let doneCount = 0;
             weekDatesStr.forEach(dateStr => {
-                let key = `${habit.id}_${dateStr}`;
-                if (habitRecords[key]) doneCount++;
+                if (habitRecords[`${habit.id}_${dateStr}`]) doneCount++;
             });
 
             let percentage = Math.round((doneCount / 7) * 100);
-
-            let statDiv = document.createElement('div');
-            statDiv.className = 'stat-item';
             
-            statDiv.innerHTML = `
-                <div class="donut-chart" style="--p: ${percentage}%">
-                    <span>${percentage}%</span>
+            container.innerHTML += `
+                <div class="stat-item">
+                    <div class="donut-chart" style="--p: ${percentage}%">
+                        <span>${percentage}%</span>
+                    </div>
+                    <div style="font-weight: bold; font-size: 0.9em; line-height: 1.2;">${habit.name}</div>
                 </div>
-                <div class="stat-name">${habit.name}</div>
-                <div style="font-size: 12px; color: var(--text-muted);">${doneCount}/7 ngày</div>
             `;
-            container.appendChild(statDiv);
         });
     }
 
@@ -422,21 +525,24 @@
         tbody.innerHTML = '';
 
         if (todos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="color: var(--text-muted);">Chưa có việc nào trong danh sách.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="3" style="color: var(--text-muted);">Bạn rảnh rỗi!</td></tr>`;
         }
 
         todos.forEach(todo => {
             let tr = document.createElement('tr');
-            let textStyle = todo.done ? 'text-decoration: line-through; color: var(--text-muted);' : '';
+            let textStyle = todo.done ? 'text-decoration: line-through; color: var(--text-muted); opacity: 0.5;' : 'font-weight: bold;';
+            let noteHtml = todo.note ? `<div style="font-size: 12px; color: var(--accent-yellow); margin-top: 4px; font-weight: normal;">>> ${todo.note}</div>` : '';
             
             tr.innerHTML = `
-                <td class="text-left" style="${textStyle}"><strong>${todo.task}</strong></td>
-                <td class="text-left" style="${textStyle}">${todo.note}</td>
-                <td>
-                    <input type="checkbox" ${todo.done ? 'checked' : ''} onchange="toggleTodo('${todo.id}')">
+                <td class="text-left" style="${textStyle}">
+                    ${todo.task}
+                    ${noteHtml}
                 </td>
                 <td>
-                    <button class="danger" onclick="removeTodo('${todo.id}')">Xóa</button>
+                    <input type="checkbox" class="brutal-checkbox" ${todo.done ? 'checked' : ''} onchange="toggleTodo('${todo.id}')">
+                </td>
+                <td>
+                    <button class="btn-danger" onclick="removeTodo('${todo.id}')">Xóa</button>
                 </td>
             `;
             tbody.appendChild(tr);
