@@ -1,623 +1,180 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro-Futuristic Habit Tracker</title>
-    <!-- Font chữ kỹ thuật số hoài cổ -->
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* Palette từ image_096c57.png */
-            --ashes: #B7B4AE;
-            --light-charcoal: #726E68;
-            --dryad-bark: #33312F;
-            --black-kite: #371E1E;
-            --existential-angst: #0A0A0A;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Tracker — Habit & Tasks</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a09;--panel:#201f1c;--panel-2:#171714;--panel-3:#11110f;
+  --text:#eee9df;--muted:#9a9388;--muted-2:#686259;--line:#504a42;
+  --accent:#d0a56a;--accent-hi:#e7c48f;--accent-soft:rgba(208,165,106,.09);
+  --accent-dim:#8d6d43;--danger:#a56d62;--success:#b9b08f;--shadow:0 20px 54px rgba(0,0,0,.45)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;padding:24px;background:var(--bg);color:var(--text);font:500 15px/1.5 'Be Vietnam Pro',system-ui,sans-serif;background-image:linear-gradient(rgba(208,165,106,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(208,165,106,.028) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.012) 50%,transparent 50%),radial-gradient(circle at 50% 0%,rgba(208,165,106,.07),transparent 34rem);background-size:32px 32px,32px 32px,100% 4px,auto;}
+body::after{content:"";pointer-events:none;position:fixed;inset:0;background:linear-gradient(to bottom,transparent 0%,rgba(255,255,255,.012) 50%,transparent 100%);opacity:.5;mix-blend-mode:screen}
+button,input{font:inherit}
+button{border:1px solid var(--line);border-radius:9px;min-height:42px;padding:0 14px;background:#141413;color:var(--text);font:700 .82rem 'Rajdhani',sans-serif;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:transform .16s,border-color .16s,background .16s,box-shadow .16s}
+button:hover{border-color:var(--accent);background:#1c1c1a;transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,0,0,.18)}
+button:active{transform:translateY(0)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#17130e;box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 8px 22px rgba(208,165,106,.08)}
+.btn-primary:hover{background:var(--accent-hi);border-color:var(--accent-hi)}
+.btn-ghost{background:transparent}
+.btn-danger{min-height:30px;padding:0 8px;background:transparent;color:var(--muted);font-size:.7rem;box-shadow:none}
+.btn-danger:hover{background:rgba(146,113,107,.12);border-color:var(--danger);color:var(--accent-hi)}
+input[type=text],input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:9px;outline:none;background:#0d0d0c;color:var(--text);font:500 .92rem 'Be Vietnam Pro',sans-serif;transition:border-color .18s,box-shadow .18s}
+input::placeholder{color:var(--muted-2)}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(185,181,174,.07)}
+.dashboard{width:min(1500px,100%);margin:0 auto;display:flex;flex-direction:column;gap:16px;position:relative}
+.panel{background:linear-gradient(180deg,rgba(255,255,255,.018),rgba(255,255,255,.006)),var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.panel::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.02),transparent 28%);opacity:.8}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:4px 2px}
+.brand-wrap{min-width:0}.eyebrow{font:600 .77rem/1 'Rajdhani',sans-serif;letter-spacing:2.2px;color:var(--muted);text-transform:uppercase}.brand{margin:6px 0 0;font:700 clamp(2.1rem,4vw,3.15rem)/.9 'Rajdhani',sans-serif;letter-spacing:2.5px}.brand-sub{margin-top:8px;color:var(--muted);font-size:.8rem}
+.status-line{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.78rem;margin-top:6px}.status-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px rgba(185,181,174,.42);animation:pulse 2.4s infinite}.status-line strong{color:var(--text);font-weight:700}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+.top-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),var(--panel-2);border:1px solid rgba(114,110,104,.5);border-radius:11px;padding:13px 14px;position:relative;overflow:hidden}.metric::after{content:"";position:absolute;right:-24px;bottom:-28px;width:72px;height:72px;border:1px solid rgba(185,181,174,.07);border-radius:50%}.metric-value{font:700 1.55rem/1 'Rajdhani',sans-serif}.metric-label{margin-top:4px;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.8px}
+.layout-main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.7fr);gap:16px}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}.section-head h2{margin:0;font:700 1.16rem/1.1 'Rajdhani',sans-serif;text-transform:uppercase;letter-spacing:1.5px}.section-meta{color:var(--muted);font-size:.78rem}.section-code{font:600 .72rem 'Rajdhani',sans-serif;letter-spacing:1px;color:var(--muted-2)}
+.controls-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:9px;background:var(--panel-2);border:1px solid rgba(114,110,104,.45);border-radius:10px;margin-bottom:12px}.week-display{text-align:center;font-weight:700}.week-display small{display:block;color:var(--muted);font-size:.68rem;font-weight:500;margin-top:2px}.habit-add{display:grid;grid-template-columns:1fr auto;gap:9px;margin-bottom:12px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;max-height:520px}table{width:100%;min-width:820px;border-collapse:separate;border-spacing:0}th,td{padding:11px 9px;text-align:center;vertical-align:middle;border-right:1px solid rgba(114,110,104,.26);border-bottom:1px solid rgba(114,110,104,.26);white-space:nowrap}th{position:sticky;top:0;z-index:2;background:#141310;color:var(--text);font:700 .8rem 'Rajdhani',sans-serif;letter-spacing:.65px;box-shadow:inset 0 -1px 0 var(--line)}th:first-child{left:0;z-index:5}td:first-child{position:sticky;left:0;z-index:4;background:var(--panel)}tr:hover td{background:rgba(255,255,255,.015)}tr:hover td:first-child{background:#282725}tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}.habit-name-cell{min-width:270px}.habit-name-wrap{display:flex;align-items:center;justify-content:space-between;gap:10px}.habit-name{font-weight:700;overflow:hidden;text-overflow:ellipsis}.habit-actions{display:flex;gap:3px;opacity:0;transition:opacity .14s}.habit-name-wrap:hover .habit-actions{opacity:1}.today-col{background:var(--accent-soft)!important}.today-badge{display:inline-block;margin-top:3px;padding:2px 6px;border:1px solid rgba(208,165,106,.45);border-radius:999px;color:var(--accent);background:rgba(208,165,106,.06);font-size:.56rem;letter-spacing:.45px}.heat{appearance:none;-webkit-appearance:none;display:grid;width:26px;height:26px;min-width:26px;min-height:26px;margin:0 auto;padding:0;align-items:center;justify-items:center;border-radius:7px;border:1px solid #625c53;background:#0b0b0a;cursor:pointer;transition:transform .14s,border-color .14s,box-shadow .14s,background .14s;box-shadow:none;line-height:1}.heat:hover{transform:scale(1.06);border-color:var(--accent)}.heat.done{background:var(--accent);border-color:var(--accent);box-shadow:0 0 12px rgba(208,165,106,.2)}.heat.done::after{content:'✓';display:block;color:#17130e;font:800 13px/1 'Be Vietnam Pro',sans-serif;transform:translateY(-.5px)}.heat.today-ring{box-shadow:0 0 0 2px rgba(208,165,106,.22),0 0 10px rgba(208,165,106,.08)}
+.side-stack{display:flex;flex-direction:column;gap:16px}.terminal-card{background:#10100f;border:1px solid rgba(114,110,104,.48);border-radius:11px;padding:13px 14px;font:500 .8rem/1.65 'Rajdhani',sans-serif;letter-spacing:.6px;color:var(--muted)}.terminal-row{display:flex;justify-content:space-between;gap:12px}.terminal-row strong{color:var(--text)}
+.brief{display:flex;flex-direction:column;gap:10px}.brief-lead{font-size:1.02rem;font-weight:700;line-height:1.35}.brief-copy{color:var(--muted);font-size:.82rem}.brief-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}.brief-kpi{background:var(--panel-2);border:1px solid rgba(114,110,104,.4);border-radius:9px;padding:9px 10px}.brief-kpi strong{display:block;font:700 1.15rem 'Rajdhani',sans-serif}.brief-kpi span{font-size:.7rem;color:var(--muted)}
+.bottom-grid{display:grid;grid-template-columns:minmax(300px,.92fr) minmax(0,1.08fr);gap:16px}.stats-wrapper{display:flex;flex-direction:column;gap:16px}.overall{display:grid;grid-template-columns:112px 1fr;gap:15px;align-items:center}.donut-chart{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(var(--accent) var(--p,0),#101010 0);border:1px solid var(--line)}.donut-chart::before{content:'';position:absolute;inset:10px;border-radius:50%;background:var(--panel);border:1px solid var(--line)}.donut-chart span{position:relative;font:700 1.38rem 'Rajdhani',sans-serif}.overall-copy strong{display:block;font:700 1.1rem 'Rajdhani',sans-serif;letter-spacing:.7px}.overall-copy p{margin:5px 0 0;color:var(--muted);font-size:.8rem}.mini-progress-list{display:flex;flex-direction:column;gap:11px;margin-top:8px}.progress-block{display:flex;flex-direction:column;gap:5px}.progress-header{display:flex;justify-content:space-between;gap:10px;font-size:.8rem}.progress-header span:last-child{color:var(--muted)}.progress-bar{height:8px;background:#101010;border:1px solid var(--line);border-radius:999px;overflow:hidden}.progress-fill{height:100%;background:var(--accent);transition:width .35s ease}
+.activity{display:flex;flex-direction:column;gap:9px}.graph{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:130px}.graph-col{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px}.graph-bar-wrap{height:100px;width:100%;display:flex;align-items:flex-end;justify-content:center}.graph-bar{width:min(34px,70%);min-height:3px;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,var(--accent-hi),var(--accent));box-shadow:0 0 14px rgba(185,181,174,.08);transition:height .3s ease}.graph-bar.today{box-shadow:0 0 0 2px rgba(185,181,174,.1),0 0 18px rgba(185,181,174,.14)}.graph-label{font:700 .68rem 'Rajdhani',sans-serif;color:var(--muted)}.graph-value{font:600 .67rem 'Rajdhani',sans-serif;color:var(--muted-2)}
+.date-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}.date-field label{display:block;color:var(--muted);font:700 .72rem 'Rajdhani',sans-serif;letter-spacing:.7px;margin-bottom:5px}.result-empty{margin-top:10px}.empty-state{padding:26px 15px;color:var(--muted);text-align:center;border:1px dashed var(--line);border-radius:10px}.divider-title{display:flex;align-items:center;gap:10px;color:var(--muted);font:700 .72rem 'Rajdhani',sans-serif;letter-spacing:1.1px;text-transform:uppercase;margin:14px 0 8px}.divider-title::after{content:'';height:1px;flex:1;background:var(--line)}
+.todo-panel{display:flex;flex-direction:column;min-height:518px}.todo-input-group{display:grid;grid-template-columns:1.45fr 1fr auto;gap:9px;margin-bottom:10px}.todo-tabs{display:flex;gap:6px;margin-bottom:10px}.tab{min-height:32px;padding:0 11px;font-size:.7rem;border-radius:999px}.tab.active{background:var(--accent);border-color:var(--accent);color:#111}.todo-list-container{flex:1;display:flex;flex-direction:column;gap:8px;max-height:520px;overflow:auto;padding-right:3px}.todo-list-container::-webkit-scrollbar{width:7px}.todo-list-container::-webkit-scrollbar-track{background:#101010;border-radius:99px}.todo-list-container::-webkit-scrollbar-thumb{background:#55514b;border-radius:99px}.todo-item{display:flex;align-items:center;gap:10px;padding:11px 12px;background:rgba(8,8,8,.45);border:1px solid var(--line);border-radius:10px;transition:.17s}.todo-item:hover{background:rgba(255,255,255,.018);border-color:#77716a;transform:translateY(-1px)}.todo-item.done{opacity:.56}.todo-item.done .todo-text{text-decoration:line-through;color:var(--muted)}.todo-content{flex:1;min-width:0}.todo-text{display:block;font-weight:700;overflow-wrap:anywhere}.todo-note{display:block;margin-top:2px;color:var(--muted);font-size:.76rem;overflow-wrap:anywhere}.todo-delete{opacity:0;transition:opacity .14s}.todo-item:hover .todo-delete,.todo-delete:focus{opacity:1}.footer-note{color:var(--muted-2);font-size:.7rem;margin-top:8px;text-align:right}
+.actions-row{display:flex;justify-content:space-between;align-items:center;gap:10px}.small-note{color:var(--muted);font-size:.72rem}.hidden{display:none!important}
+@media(max-width:1120px){.layout-main{grid-template-columns:1fr}.side-stack{display:grid;grid-template-columns:1fr 1fr}.bottom-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.bottom-grid{grid-template-columns:1fr}.todo-panel{min-height:450px}.summary{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){body{padding:12px}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%;justify-content:flex-start}.layout-main,.bottom-grid,.side-stack{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.panel{padding:14px}.controls-row{grid-template-columns:1fr 1fr}.week-display{grid-column:1/-1;grid-row:1}.habit-add,.todo-input-group{grid-template-columns:1fr}.overall{grid-template-columns:1fr;text-align:center}.donut-chart{margin:auto}.date-grid{grid-template-columns:1fr}.graph{gap:4px}.table-wrap{max-height:440px}.footer-note{text-align:left}.habit-actions{opacity:1}}
 
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background-color: var(--existential-angst);
-            color: var(--ashes);
-            margin: 0;
-            padding: 30px;
-            /* Hiệu ứng lưới Grid nền của Retro-Futurism */
-            background-image: 
-                linear-gradient(rgba(114, 110, 104, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(114, 110, 104, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            min-height: 100vh;
-        }
+.retro-checkbox{appearance:none;-webkit-appearance:none;width:22px;height:22px;min-width:22px;min-height:22px;margin:0;padding:0;border:1px solid #625c53;border-radius:6px;background:#0b0b0a;display:grid;place-items:center;cursor:pointer;vertical-align:middle;position:relative;transition:transform .14s,border-color .14s,background .14s,box-shadow .14s}.retro-checkbox:hover{transform:scale(1.04);border-color:var(--accent)}.retro-checkbox:checked{background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px rgba(208,165,106,.16)}.retro-checkbox:checked::after{content:'✓';color:#17130e;font:800 12px/1 'Be Vietnam Pro',sans-serif;transform:translateY(-.5px)}
+/* FINAL PRODUCT LAYER */
+.today-focus{display:flex;flex-direction:column;gap:12px}
+.today-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.today-title{font:700 1.5rem/1 'Rajdhani',sans-serif;letter-spacing:1.6px}
+.today-date{color:var(--muted);font-size:.8rem}
+.today-progress{display:flex;align-items:center;gap:12px}
+.today-progress .progress-bar{flex:1}
+.today-percent{font:700 1rem 'Rajdhani',sans-serif}
+.focus-list{display:grid;gap:7px;margin-top:4px}
+.focus-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid rgba(114,110,104,.28);border-radius:9px;background:rgba(0,0,0,.16);cursor:pointer}
+.focus-item:hover{border-color:var(--line);background:rgba(255,255,255,.025)}
+.focus-item .mini-state{margin-left:auto;color:var(--muted);font:700 .72rem 'Rajdhani',sans-serif}
+.habit-meta{display:flex;align-items:center;gap:7px;margin-top:4px;flex-wrap:wrap}
+.meta-pill{padding:2px 7px;border:1px solid rgba(114,110,104,.45);border-radius:999px;color:var(--muted);font-size:.62rem}
+.meta-pill.strong{color:var(--accent);border-color:rgba(185,181,174,.55)}
+.heat.skipped{background:#2b2926;border-color:#6a655d}
+.heat.skipped::after{content:'—';display:block;color:var(--muted);font:800 14px/1 'Be Vietnam Pro',sans-serif;transform:translateY(-.5px)}
+.habit-actions .btn-danger{font-size:.62rem}
+.schedule-badge{margin-left:6px;color:var(--muted);font-size:.62rem}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.68);display:none;align-items:center;justify-content:center;padding:18px;z-index:40;backdrop-filter:blur(7px)}
+.modal-backdrop.open{display:flex}
+.modal{width:min(720px,100%);max-height:min(90vh,760px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 28px 90px rgba(0,0,0,.55);padding:20px}
+.modal-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}
+.modal-title{font:700 1.8rem/1 'Rajdhani',sans-serif;letter-spacing:1.2px}
+.modal-sub{color:var(--muted);font-size:.78rem;margin-top:6px}
+.detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.detail-stat{padding:12px;background:var(--panel-2);border:1px solid rgba(114,110,104,.38);border-radius:10px}.detail-stat strong{display:block;font:700 1.5rem/1 'Rajdhani',sans-serif}.detail-stat span{display:block;color:var(--muted);font-size:.64rem;margin-top:5px}
+.schedule-box{padding:12px;background:var(--panel-2);border:1px solid rgba(114,110,104,.38);border-radius:10px;margin-bottom:16px}.schedule-title{font:700 .75rem 'Rajdhani',sans-serif;letter-spacing:1px;margin-bottom:9px}
+.schedule-options{display:flex;gap:7px;flex-wrap:wrap}.day-toggle{width:40px;height:36px;padding:0;border-radius:8px}.day-toggle.selected{background:var(--accent);border-color:var(--accent);color:#111}
+.frequency-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.select-like{height:40px;border:1px solid var(--line);background:#0d0d0c;color:var(--text);border-radius:9px;padding:0 10px;font:500 .84rem 'Be Vietnam Pro',sans-serif}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.detail-graph{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin-top:8px}.detail-cell{aspect-ratio:1;border-radius:4px;background:#0d0d0c;border:1px solid rgba(114,110,104,.22)}.detail-cell.done{background:var(--accent)}.detail-cell.skip{background:#2b2926}
+.insight-box{padding:12px;border-left:3px solid var(--accent);background:rgba(255,255,255,.025);color:var(--muted);font-size:.78rem}
+@media(max-width:700px){.detail-grid{grid-template-columns:1fr 1fr}.today-head{flex-direction:column}.frequency-row{grid-template-columns:1fr}.detail-graph{grid-template-columns:repeat(10,1fr)}}
 
-        h1, h2, h3 {
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(183, 180, 174, 0.3);
-            margin-top: 0;
-        }
-
-        h1 { text-align: center; font-size: 2.8em; margin-bottom: 30px; color: var(--ashes); }
-
-        /* Bố cục chính */
-        .dashboard {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .bottom-section {
-            display: grid;
-            grid-template-columns: 1fr 1.8fr; /* Todo list chiếm phần lớn hơn */
-            gap: 25px;
-            align-items: start;
-        }
-
-        /* Thẻ nội dung (Cards) - Bo góc nhẹ, nền Dryad Bark */
-        .panel {
-            background-color: var(--dryad-bark);
-            border: 1px solid var(--light-charcoal);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(183, 180, 174, 0.03);
-            backdrop-filter: blur(4px);
-        }
-
-        .todo-panel {
-            display: flex;
-            flex-direction: column;
-            min-height: 500px; /* Fill dài ra */
-        }
-
-        /* Nút bấm */
-        button {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            text-transform: uppercase;
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid var(--light-charcoal);
-            background-color: var(--black-kite);
-            color: var(--ashes);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(55, 30, 30, 0.5);
-        }
-        button:hover {
-            border-color: var(--ashes);
-            box-shadow: 0 0 15px rgba(183, 180, 174, 0.4);
-            text-shadow: 0 0 5px var(--ashes);
-        }
-        button.btn-danger {
-            background-color: transparent;
-            border: 1px solid var(--light-charcoal);
-            color: var(--light-charcoal);
-            padding: 6px 12px;
-            font-size: 14px;
-        }
-        button.btn-danger:hover {
-            border-color: var(--black-kite);
-            color: var(--ashes);
-            background-color: var(--black-kite);
-        }
-
-        /* Inputs */
-        input[type="text"], input[type="date"] {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-            font-weight: 500;
-            padding: 10px 15px;
-            background-color: var(--existential-angst);
-            border: 1px solid var(--light-charcoal);
-            color: var(--ashes);
-            border-radius: 8px;
-            outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        input:focus {
-            border-color: var(--ashes);
-            box-shadow: 0 0 10px rgba(183, 180, 174, 0.2);
-        }
-        input::placeholder { color: var(--light-charcoal); }
-
-        /* --- BẢNG HABIT TRACKER --- */
-        .controls-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: rgba(10, 10, 10, 0.4);
-            border-radius: 8px;
-            border: 1px solid rgba(114, 110, 104, 0.3);
-        }
-        #weekDisplay { font-size: 1.4em; font-weight: 700; color: var(--ashes); letter-spacing: 1px;}
-        
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            border: 1px solid var(--light-charcoal);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid rgba(114, 110, 104, 0.3);
-            border-right: 1px solid rgba(114, 110, 104, 0.3);
-        }
-        th { background-color: rgba(10, 10, 10, 0.6); font-size: 1.1em; color: var(--ashes); }
-        td:last-child, th:last-child { border-right: none; }
-        tr:last-child td { border-bottom: none; }
-        .text-left { text-align: left; }
-
-        /* Custom Checkbox Retro */
-        .retro-checkbox {
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--light-charcoal);
-            border-radius: 6px;
-            background: var(--existential-angst);
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s;
-        }
-        .retro-checkbox:checked {
-            background: var(--black-kite);
-            border-color: var(--ashes);
-            box-shadow: 0 0 10px rgba(183, 180, 174, 0.3);
-        }
-        .retro-checkbox:checked::after {
-            content: '✓';
-            position: absolute;
-            color: var(--ashes);
-            font-size: 18px;
-            font-weight: bold;
-            left: 4px;
-            top: 0px;
-        }
-
-        /* --- THỐNG KÊ --- */
-        .stats-wrapper { display: flex; flex-direction: column; gap: 20px; }
-        .stats-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-        .stat-item { text-align: center; }
-        
-        .donut-chart {
-            width: 70px; height: 70px;
-            border-radius: 50%;
-            background: conic-gradient(var(--black-kite) var(--p, 0%), var(--existential-angst) 0);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 10px;
-            position: relative;
-            border: 1px solid var(--light-charcoal);
-            box-shadow: 0 0 10px rgba(55, 30, 30, 0.3);
-        }
-        .donut-chart::before {
-            content: ""; position: absolute;
-            width: 50px; height: 50px;
-            background: var(--dryad-bark);
-            border-radius: 50%;
-            border: 1px solid var(--light-charcoal);
-        }
-        .donut-chart span { position: relative; font-weight: 700; font-size: 1.1em;}
-
-        .progress-block { margin-bottom: 12px; }
-        .progress-header { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 5px; font-size: 1.1em;}
-        .progress-bar {
-            width: 100%; height: 14px;
-            background: var(--existential-angst);
-            border: 1px solid var(--light-charcoal);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: var(--black-kite);
-            box-shadow: 0 0 10px rgba(183, 180, 174, 0.2);
-            transition: width 0.5s ease-out;
-        }
-
-        /* --- TO-DO LIST ĐƯỢC MỞ RỘNG --- */
-        .todo-input-group {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px dashed var(--light-charcoal);
-        }
-        
-        .todo-list-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
-            max-height: 500px;
-            padding-right: 10px;
-        }
-
-        /* Thanh trượt (Scrollbar) phong cách retro */
-        .todo-list-container::-webkit-scrollbar { width: 6px; }
-        .todo-list-container::-webkit-scrollbar-track { background: var(--existential-angst); border-radius: 4px; }
-        .todo-list-container::-webkit-scrollbar-thumb { background: var(--light-charcoal); border-radius: 4px; }
-
-        .todo-item {
-            display: flex;
-            align-items: center;
-            background: rgba(10, 10, 10, 0.5);
-            border: 1px solid var(--light-charcoal);
-            padding: 15px 20px;
-            border-radius: 10px;
-            gap: 20px;
-            transition: background 0.2s;
-        }
-        .todo-item:hover { background: rgba(55, 30, 30, 0.2); border-color: var(--ashes); }
-        .todo-item.done { opacity: 0.6; }
-        .todo-item.done .todo-text { text-decoration: line-through; color: var(--light-charcoal); }
-
-        .todo-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .todo-text { font-size: 1.3em; font-weight: 600; color: var(--ashes); }
-        .todo-note { font-size: 1em; color: var(--light-charcoal); }
-
-        @media (max-width: 1024px) {
-            .bottom-section { grid-template-columns: 1fr; }
-            .todo-input-group { flex-direction: column; }
-        }
-    </style>
-</head>
+</style>
 <body>
-
 <div class="dashboard">
-    <h1>TERMINAL // SYSTEM_TRACKER</h1>
-
-    <!-- HÀNG TRÊN: LỊCH CHỈ TIÊU -->
-    <div class="panel">
-        <h2>Lịch Theo Dõi Chỉ Tiêu</h2>
-        
-        <div class="controls-row">
-            <button onclick="changeWeek(-1)">&#9664; Tuần trước</button>
-            <span id="weekDisplay">Tuần: ...</span>
-            <button onclick="changeWeek(1)">Tuần sau &#9654;</button>
-        </div>
-        
-        <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-            <input type="text" id="habitInput" placeholder="Khởi tạo mục tiêu mới..." style="flex: 1; max-width: 400px;">
-            <button onclick="addHabit()">THÊM MỤC TIÊU</button>
-        </div>
-
-        <div style="overflow-x: auto;">
-            <table id="habitTable">
-                <thead>
-                    <tr id="habitHead">
-                        <th class="text-left" style="width: 250px;">CHỈ TIÊU</th>
-                    </tr>
-                </thead>
-                <tbody id="habitBody">
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- HÀNG DƯỚI: CHIA 2 CỘT -->
-    <div class="bottom-section">
-        
-        <!-- Cột Trái: Thống kê -->
-        <div class="stats-wrapper">
-            <!-- Thống kê Tùy chỉnh -->
-            <div class="panel">
-                <h2>Phân Tích Dữ Liệu</h2>
-                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <span style="width: 50px; color: var(--light-charcoal);">BẮT ĐẦU:</span>
-                        <input type="date" id="customStart" style="flex: 1;">
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <span style="width: 50px; color: var(--light-charcoal);">KẾT THÚC:</span>
-                        <input type="date" id="customEnd" style="flex: 1;">
-                    </div>
-                    <button onclick="calculateCustomStats()">TRÍCH XUẤT DỮ LIỆU</button>
-                </div>
-                <div id="customStatsResult">
-                    <p style="color: var(--light-charcoal); text-align: center; font-style: italic;">Đang chờ lệnh nhập liệu...</p>
-                </div>
-            </div>
-
-            <!-- Thống kê Tuần -->
-            <div class="panel">
-                <h2>Hiệu Suất Tuần</h2>
-                <div class="stats-grid" id="weeklyStatsContainer"></div>
-            </div>
-        </div>
-
-        <!-- Cột Phải: To-do List Mở rộng -->
-        <div class="panel todo-panel">
-            <h2>Hàng Đợi Nhiệm Vụ (To-Do)</h2>
-            
-            <div class="todo-input-group">
-                <input type="text" id="todoTask" placeholder="Tên nhiệm vụ..." style="flex: 1.5;">
-                <input type="text" id="todoNote" placeholder="Ghi chú dữ liệu..." style="flex: 1;">
-                <button onclick="addTodo()">THÊM</button>
-            </div>
-            
-            <div class="todo-list-container" id="todoBody">
-                <!-- Các Todo Item sẽ được tạo bởi JS ở đây -->
-            </div>
-        </div>
-
-    </div>
+<header class="topbar">
+  <div class="brand-wrap"><div class="eyebrow">PERSONAL PRODUCTIVITY / LOCAL DATA</div><h1 class="brand">SYSTEM_TRACKER</h1><div class="brand-sub">A focused habit tracker built around today, consistency and recovery.</div><div class="status-line"><span class="status-dot"></span><span>SYSTEM</span><strong>ONLINE</strong><span>·</span><span id="liveDate">--</span></div></div>
+  <div class="top-actions"><button class="btn-ghost" onclick="goToToday()">⌂ HÔM NAY</button><button class="btn-ghost" onclick="exportData()">EXPORT</button><button class="btn-ghost" onclick="document.getElementById('importFile').click()">IMPORT</button><input id="importFile" type="file" accept="application/json" hidden></div>
+</header>
+<section class="summary"><div class="metric"><div class="metric-value" id="metricToday">0/0</div><div class="metric-label">Hôm nay</div></div><div class="metric"><div class="metric-value" id="metricPercent">0%</div><div class="metric-label">Tiến độ tuần</div></div><div class="metric"><div class="metric-value" id="metricStreak">0</div><div class="metric-label">Best current streak</div></div><div class="metric"><div class="metric-value" id="metricTasks">0</div><div class="metric-label">Nhiệm vụ đang mở</div></div></section>
+<div class="layout-main">
+<section class="panel">
+  <div class="section-head"><div><h2>Today</h2><div class="section-meta">Việc cần làm hôm nay — tick nhanh, không cần mở statistics</div></div><div class="section-code" id="todaySummaryCode">0 / 0</div></div>
+  <div class="today-focus"><div class="today-head"><div><div class="today-title" id="todayLead">Chưa có mục tiêu</div><div class="today-date" id="todayDate">--</div></div><button class="btn-ghost" onclick="goToToday()">XEM TUẦN</button></div><div class="today-progress"><div class="progress-bar"><div class="progress-fill" id="todayProgressFill" style="width:0%"></div></div><div class="today-percent" id="todayPercent">0%</div></div><div id="todayList" class="focus-list"></div></div>
+</section>
+<aside class="side-stack">
+  <section class="panel"><div class="section-head"><div><h2>Daily Brief</h2><div class="section-meta">Tóm tắt hành trình hôm nay</div></div><div class="section-code">LIVE</div></div><div class="brief"><div class="brief-lead" id="briefLead">--</div><div class="brief-copy" id="briefCopy">--</div><div class="brief-kpis"><div class="brief-kpi"><strong id="briefRemaining">0</strong><span>habit còn lại</span></div><div class="brief-kpi"><strong id="briefDone">0%</strong><span>đã hoàn thành</span></div></div></div></section>
+  <section class="panel"><div class="section-head"><div><h2>Best Habit</h2><div class="section-meta">Theo dõi riêng habit nổi bật</div></div><div class="section-code">INSIGHT</div></div><div id="bestHabitBox" class="insight-box">Chưa có đủ dữ liệu.</div></section>
+</aside>
 </div>
-
+<section class="panel"><div class="section-head"><div><h2>Habit Tracker</h2><div class="section-meta">✓ hoàn thành · ○ còn phải làm · — ngày nghỉ / skip · click ô để đánh dấu</div></div><div class="section-code">MODULE / HABIT_CORE</div></div><div class="controls-row"><button onclick="changeWeek(-1)">◀ TRƯỚC</button><div class="week-display" id="weekDisplay">...</div><button onclick="changeWeek(1)">SAU ▶</button></div><div class="habit-add"><input id="habitInput" type="text" maxlength="80" placeholder="Thêm habit mới..." aria-label="Tên habit"><button class="btn-primary" onclick="openCreateHabit()">+ THÊM HABIT</button></div><div class="table-wrap"><table id="habitTable"><thead><tr id="habitHead"></tr></thead><tbody id="habitBody"></tbody></table></div></section>
+<div class="bottom-grid">
+<div class="stats-wrapper">
+<section class="panel"><div class="section-head"><div><h2>Hiệu Suất Tuần</h2><div class="section-meta">Tổng quan + tiến độ từng habit</div></div><div class="section-code">ANALYTICS / 01</div></div><div class="overall"><div class="donut-chart" id="overallDonut"><span>0%</span></div><div class="overall-copy"><strong id="overallTitle">Chưa có dữ liệu</strong><p id="overallDesc">Thêm habit và bắt đầu đánh dấu từng ngày.</p></div></div><div class="divider-title">THEO HABIT</div><div id="weeklyStatsContainer" class="mini-progress-list"></div></section>
+<section class="panel activity"><div class="section-head"><div><h2>7-Day Activity</h2><div class="section-meta">Tỷ lệ hoàn thành theo từng ngày</div></div><div class="section-code">ANALYTICS / 02</div></div><div id="activityGraph" class="graph"></div></section>
+<section class="panel"><div class="section-head"><div><h2>Phân Tích Khoảng Ngày</h2><div class="section-meta">Xem hiệu suất trong một giai đoạn bất kỳ</div></div><div class="section-code">QUERY</div></div><div class="date-grid"><div class="date-field"><label for="customStart">BẮT ĐẦU</label><input id="customStart" type="date"></div><div class="date-field"><label for="customEnd">KẾT THÚC</label><input id="customEnd" type="date"></div></div><button class="btn-primary" onclick="calculateCustomStats()">PHÂN TÍCH</button><div id="customStatsResult" class="result-empty"><div class="empty-state">Chọn khoảng ngày để xem tiến độ.</div></div></section>
+</div>
+<section class="panel todo-panel"><div class="section-head"><div><h2>Nhiệm Vụ</h2><div class="section-meta">Task riêng, không ảnh hưởng streak habit</div></div><div class="section-code" id="todoCountLabel">0 đang mở</div></div><div class="todo-input-group"><input id="todoTask" type="text" maxlength="120" placeholder="Tên nhiệm vụ..." aria-label="Tên nhiệm vụ"><input id="todoNote" type="text" maxlength="160" placeholder="Ghi chú (không bắt buộc)" aria-label="Ghi chú nhiệm vụ"><button class="btn-primary" onclick="addTodo()">+ THÊM</button></div><div class="todo-tabs"><button class="tab active" data-filter="all" onclick="setTodoFilter('all')">TẤT CẢ</button><button class="tab" data-filter="active" onclick="setTodoFilter('active')">ĐANG LÀM</button><button class="tab" data-filter="done" onclick="setTodoFilter('done')">ĐÃ XONG</button></div><div id="todoBody" class="todo-list-container"></div><div class="footer-note">Enter để thêm nhanh · dữ liệu lưu cục bộ</div></section>
+</div>
+</div>
+<div class="modal-backdrop" id="habitModal" onclick="backdropClose(event)"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><div><div class="modal-title" id="modalTitle">Tạo habit</div><div class="modal-sub" id="modalSub">Thiết lập lịch theo dõi phù hợp với bạn.</div></div><button class="btn-ghost" onclick="closeHabitModal()">ĐÓNG</button></div><div class="schedule-box"><div class="schedule-title">TÊN HABIT</div><input id="modalHabitName" type="text" maxlength="80" placeholder="Ví dụ: Đọc sách 20 phút..."><div class="schedule-title" style="margin-top:14px">LỊCH HOẠT ĐỘNG</div><div class="schedule-options" id="dayOptions"></div><div class="frequency-row"><select id="frequencyMode" class="select-like"><option value="days">Theo các ngày đã chọn</option><option value="weekly">Mỗi tuần theo số lần</option></select><select id="weeklyTarget" class="select-like"><option value="1">1 lần / tuần</option><option value="2">2 lần / tuần</option><option value="3">3 lần / tuần</option><option value="4">4 lần / tuần</option><option value="5">5 lần / tuần</option><option value="6">6 lần / tuần</option><option value="7">7 lần / tuần</option></select></div></div><div class="modal-actions"><button class="btn-ghost" onclick="closeHabitModal()">HỦY</button><button class="btn-primary" onclick="saveHabitModal()">LƯU HABIT</button></div></div></div>
+<div class="modal-backdrop" id="detailModal" onclick="detailBackdropClose(event)"><div class="modal"><div class="modal-head"><div><div class="modal-title" id="detailTitle">Habit</div><div class="modal-sub" id="detailSub">--</div></div><button class="btn-ghost" onclick="closeDetail()">ĐÓNG</button></div><div class="detail-grid"><div class="detail-stat"><strong id="detailCurrent">0</strong><span>CURRENT STREAK</span></div><div class="detail-stat"><strong id="detailBest">0</strong><span>BEST STREAK</span></div><div class="detail-stat"><strong id="detailWeek">0%</strong><span>THIS WEEK</span></div><div class="detail-stat"><strong id="detailMonth">0%</strong><span>30 DAYS</span></div></div><div class="schedule-box"><div class="schedule-title">HISTORY · 14 NGÀY GẦN NHẤT</div><div id="detailGraph" class="detail-graph"></div></div><div class="insight-box" id="detailInsight">--</div></div></div>
 <script>
-    // --- KHỞI TẠO DỮ LIỆU ---
-    let currentStartOfWeek = getStartOfWeek(new Date());
-    let habits = JSON.parse(localStorage.getItem('habits')) || [];
-    let habitRecords = JSON.parse(localStorage.getItem('habitRecords')) || {}; 
-    let todos = JSON.parse(localStorage.getItem('todos')) || [];
-
-    function getStartOfWeek(date) {
-        let d = new Date(date);
-        let day = d.getDay();
-        let diff = d.getDate() - day + (day === 0 ? -6 : 1);
-        return new Date(d.setDate(diff));
-    }
-
-    function formatDate(date) {
-        return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
-    }
-
-    function getDayName(date) {
-        const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-        return days[date.getDay()];
-    }
-
-    function changeWeek(offset) {
-        currentStartOfWeek.setDate(currentStartOfWeek.getDate() + (offset * 7));
-        renderApp();
-    }
-
-    // --- XỬ LÝ CHỈ TIÊU ---
-    function addHabit() {
-        const input = document.getElementById('habitInput');
-        if (input.value.trim()) {
-            habits.push({ id: Date.now().toString(), name: input.value.trim() });
-            input.value = '';
-            saveData();
-            renderApp();
-        }
-    }
-
-    function removeHabit(id) {
-        if(confirm("Xóa bỏ dữ liệu chỉ tiêu này khỏi hệ thống?")) {
-            habits = habits.filter(h => h.id !== id);
-            saveData();
-            renderApp();
-        }
-    }
-
-    function toggleHabit(habitId, dateStr) {
-        const key = `${habitId}_${dateStr}`;
-        habitRecords[key] = !habitRecords[key];
-        saveData();
-        renderWeeklyStats();
-        if(document.getElementById('customStart').value) calculateCustomStats();
-    }
-
-    // --- XỬ LÝ TO-DO LIST ---
-    function addTodo() {
-        const taskInput = document.getElementById('todoTask');
-        const noteInput = document.getElementById('todoNote');
-        if (taskInput.value.trim()) {
-            todos.push({
-                id: Date.now().toString(),
-                task: taskInput.value.trim(),
-                note: noteInput.value.trim(),
-                done: false
-            });
-            taskInput.value = '';
-            noteInput.value = '';
-            saveData();
-            renderTodos();
-        }
-    }
-
-    function toggleTodo(id) {
-        const todo = todos.find(t => t.id === id);
-        if (todo) { todo.done = !todo.done; saveData(); renderTodos(); }
-    }
-
-    function removeTodo(id) {
-        todos = todos.filter(t => t.id !== id);
-        saveData();
-        renderTodos();
-    }
-
-    function saveData() {
-        localStorage.setItem('habits', JSON.stringify(habits));
-        localStorage.setItem('habitRecords', JSON.stringify(habitRecords));
-        localStorage.setItem('todos', JSON.stringify(todos));
-    }
-
-    // --- TÍNH TOÁN THỐNG KÊ KHOẢNG NGÀY ---
-    function calculateCustomStats() {
-        const startVal = document.getElementById('customStart').value;
-        const endVal = document.getElementById('customEnd').value;
-        const container = document.getElementById('customStatsResult');
-
-        if (!startVal || !endVal) {
-            container.innerHTML = '<p style="color: var(--light-charcoal);">[!] Thiếu tham số ngày tháng.</p>';
-            return;
-        }
-
-        const startDate = new Date(startVal);
-        const endDate = new Date(endVal);
-
-        if (startDate > endDate) {
-            container.innerHTML = '<p style="color: var(--light-charcoal);">[!] Lỗi logic: Ngày bắt đầu > Ngày kết thúc.</p>';
-            return;
-        }
-
-        if (habits.length === 0) {
-            container.innerHTML = '<p style="color: var(--light-charcoal);">Không có dữ liệu mục tiêu.</p>';
-            return;
-        }
-
-        let dates = [];
-        let current = new Date(startDate);
-        while (current <= endDate) {
-            dates.push(formatDate(current));
-            current.setDate(current.getDate() + 1);
-        }
-        
-        const totalDays = dates.length;
-        let html = '';
-
-        habits.forEach(habit => {
-            let doneCount = 0;
-            dates.forEach(dStr => { if (habitRecords[`${habit.id}_${dStr}`]) doneCount++; });
-            let percent = Math.round((doneCount / totalDays) * 100);
-            
-            html += `
-            <div class="progress-block">
-                <div class="progress-header">
-                    <span>${habit.name}</span>
-                    <span style="color: var(--light-charcoal)">${percent}% [${doneCount}/${totalDays}]</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${percent}%;"></div>
-                </div>
-            </div>`;
-        });
-        
-        container.innerHTML = html;
-    }
-
-    // --- RENDER GIAO DIỆN ---
-    function renderApp() {
-        renderCalendar();
-        renderWeeklyStats();
-        renderTodos();
-    }
-
-    function renderCalendar() {
-        let endOfWeek = new Date(currentStartOfWeek);
-        endOfWeek.setDate(currentStartOfWeek.getDate() + 6);
-        document.getElementById('weekDisplay').innerText = 
-            `[ ${currentStartOfWeek.toLocaleDateString('vi-VN')} - ${endOfWeek.toLocaleDateString('vi-VN')} ]`;
-
-        const thead = document.getElementById('habitHead');
-        thead.innerHTML = '<th class="text-left" style="width: 250px;">CHỈ TIÊU</th>';
-        
-        let weekDates = [];
-        for (let i = 0; i < 7; i++) {
-            let d = new Date(currentStartOfWeek);
-            d.setDate(currentStartOfWeek.getDate() + i);
-            weekDates.push(d);
-            thead.innerHTML += `<th>${getDayName(d)}<br><small style="color: var(--light-charcoal); font-weight: normal;">${d.getDate()}/${d.getMonth()+1}</small></th>`;
-        }
-
-        const tbody = document.getElementById('habitBody');
-        tbody.innerHTML = '';
-        
-        if (habits.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="color: var(--light-charcoal); padding: 20px;">No targets assigned.</td></tr>`;
-        }
-
-        habits.forEach(habit => {
-            let tr = document.createElement('tr');
-            let tdName = document.createElement('td');
-            tdName.className = 'text-left';
-            tdName.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-weight: 600; font-size: 1.1em;">${habit.name}</span>
-                    <button class="btn-danger" onclick="removeHabit('${habit.id}')">X</button>
-                </div>
-            `;
-            tr.appendChild(tdName);
-
-            weekDates.forEach(date => {
-                let td = document.createElement('td');
-                let dateStr = formatDate(date);
-                let key = `${habit.id}_${dateStr}`;
-                let isChecked = habitRecords[key] ? 'checked' : '';
-                td.innerHTML = `<input type="checkbox" class="retro-checkbox" ${isChecked} onchange="toggleHabit('${habit.id}', '${dateStr}')">`;
-                tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
-        });
-    }
-
-    function renderWeeklyStats() {
-        const container = document.getElementById('weeklyStatsContainer');
-        container.innerHTML = '';
-        if (habits.length === 0) {
-            container.innerHTML = '<p style="color: var(--light-charcoal);">No targets assigned.</p>';
-            return;
-        }
-
-        let weekDatesStr = [];
-        for (let i = 0; i < 7; i++) {
-            let d = new Date(currentStartOfWeek);
-            d.setDate(currentStartOfWeek.getDate() + i);
-            weekDatesStr.push(formatDate(d));
-        }
-
-        habits.forEach(habit => {
-            let doneCount = 0;
-            weekDatesStr.forEach(dateStr => {
-                if (habitRecords[`${habit.id}_${dateStr}`]) doneCount++;
-            });
-
-            let percentage = Math.round((doneCount / 7) * 100);
-            
-            container.innerHTML += `
-                <div class="stat-item">
-                    <div class="donut-chart" style="--p: ${percentage}%">
-                        <span>${percentage}%</span>
-                    </div>
-                    <div style="font-size: 0.9em; font-weight: 600; color: var(--light-charcoal);">${habit.name}</div>
-                </div>
-            `;
-        });
-    }
-
-    function renderTodos() {
-        const container = document.getElementById('todoBody');
-        container.innerHTML = '';
-
-        if (todos.length === 0) {
-            container.innerHTML = `<div style="text-align: center; color: var(--light-charcoal); padding: 40px 0; border: 1px dashed var(--light-charcoal); border-radius: 8px;">Hàng đợi trống. Hệ thống rảnh rỗi.</div>`;
-        }
-
-        todos.forEach(todo => {
-            let itemDiv = document.createElement('div');
-            itemDiv.className = `todo-item ${todo.done ? 'done' : ''}`;
-            
-            let noteHtml = todo.note ? `<span class="todo-note">>> ${todo.note}</span>` : '';
-            
-            itemDiv.innerHTML = `
-                <input type="checkbox" class="retro-checkbox" ${todo.done ? 'checked' : ''} onchange="toggleTodo('${todo.id}')">
-                <div class="todo-content">
-                    <span class="todo-text">${todo.task}</span>
-                    ${noteHtml}
-                </div>
-                <button class="btn-danger" onclick="removeTodo('${todo.id}')">DEL</button>
-            `;
-            container.appendChild(itemDiv);
-        });
-    }
-
-    renderApp();
+let currentStartOfWeek=getStartOfWeek(new Date());
+let habits=migrateHabits(readStorage('habits',[]));
+let habitRecords=readStorage('habitRecords',{}),habitSkips=readStorage('habitSkips',{}),todos=readStorage('todos',[]),todoFilter='all',editingHabitId=null,detailHabitId=null;
+function readStorage(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}
+function uid(){return window.crypto?.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2)}
+function parseLocalDate(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
+function formatDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function getStartOfWeek(d){const x=new Date(d),day=x.getDay();x.setHours(0,0,0,0);x.setDate(x.getDate()-(day===0?6:day-1));return x}
+function getWeekDates(){return Array.from({length:7},(_,i)=>{const d=new Date(currentStartOfWeek);d.setDate(d.getDate()+i);return d})}
+function isToday(d){return formatDate(d)===formatDate(new Date())}
+function migrateHabits(arr){return arr.map(h=>({...h,schedule:h.schedule||{mode:'days',days:[1,2,3,4,5,6,7],target:7}}))}
+function saveData(){localStorage.setItem('habits',JSON.stringify(habits));localStorage.setItem('habitRecords',JSON.stringify(habitRecords));localStorage.setItem('habitSkips',JSON.stringify(habitSkips));localStorage.setItem('todos',JSON.stringify(todos))}
+function changeWeek(o){currentStartOfWeek=new Date(currentStartOfWeek);currentStartOfWeek.setDate(currentStartOfWeek.getDate()+o*7);renderApp()}
+function goToToday(){currentStartOfWeek=getStartOfWeek(new Date());renderApp()}
+function isScheduled(h,date){const wd=date.getDay()||7,s=h.schedule||{mode:'days',days:[1,2,3,4,5,6,7],target:7};if(s.mode==='weekly')return true;return s.days.includes(wd)}
+function isDone(h,dateStr){return !!habitRecords[`${h.id}_${dateStr}`]}
+function isSkipped(h,dateStr){return !!habitSkips[`${h.id}_${dateStr}`]}
+function toggleHabit(h,date){const key=`${h.id}_${date}`;if(!isScheduled(h,parseLocalDate(date)))return;if(habitRecords[key])delete habitRecords[key];else{habitRecords[key]=true;delete habitSkips[key]}saveData();renderApp(false)}
+function cycleCell(h,date){const key=`${h.id}_${date}`,d=parseLocalDate(date);if(!isScheduled(h,d)){habitSkips[key]=!habitSkips[key];saveData();renderApp(false);return}if(habitRecords[key]){delete habitRecords[key];habitSkips[key]=true}else if(habitSkips[key]){delete habitSkips[key];habitRecords[key]=true}else habitRecords[key]=true;saveData();renderApp(false)}
+function habitCurrentStreak(h){let d=new Date();d.setHours(0,0,0,0);let n=0;while(true){const s=formatDate(d);if(isDone(h,s))n++;else if(isSkipped(h,s)||!isScheduled(h,d)){}else break;d.setDate(d.getDate()-1)}return n}
+function habitBestStreak(h){let best=0,run=0,d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-90);for(let i=0;i<90;i++){const s=formatDate(d);if(isDone(h,s))run++;else if(isSkipped(h,s)||!isScheduled(h,d)){}else{best=Math.max(best,run);run=0}d.setDate(d.getDate()+1)}return Math.max(best,run)}
+function scheduledDates(h,start,end){const out=[];for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1))if(isScheduled(h,d))out.push(formatDate(d));return out}
+function getWeekStats(){const ds=getWeekDates(),per=[];let possible=0,done=0;habits.forEach(h=>{let p=0,d=0;ds.forEach(x=>{if(isScheduled(h,x)){p++;if(isDone(h,formatDate(x)))d++}});possible+=p;done+=d;per.push({habit:h,done:d,possible:p,percent:p?Math.round(d/p*100):100})});return{possible,done,percent:possible?Math.round(done/possible*100):0,per,dates:ds}}
+function updateSummary(){const today=formatDate(new Date());let scheduled=0,done=0;habits.forEach(h=>{if(isScheduled(h,new Date())){scheduled++;if(isDone(h,today))done++}});const s=getWeekStats(),active=todos.filter(t=>!t.done).length,best=Math.max(0,...habits.map(h=>habitCurrentStreak(h)));document.getElementById('metricToday').textContent=`${done}/${scheduled}`;document.getElementById('metricPercent').textContent=s.percent+'%';document.getElementById('metricStreak').textContent=best+'d';document.getElementById('metricTasks').textContent=active;document.getElementById('todoCountLabel').textContent=`${active} đang mở`;renderToday();renderBrief();renderBestHabit()}
+function renderToday(){const today=new Date(),s=formatDate(today);document.getElementById('todayDate').textContent=today.toLocaleDateString('vi-VN',{weekday:'long',day:'2-digit',month:'long'});const items=habits.filter(h=>isScheduled(h,today)),done=items.filter(h=>isDone(h,s)).length,pct=items.length?Math.round(done/items.length*100):0;document.getElementById('todaySummaryCode').textContent=`${done} / ${items.length}`;document.getElementById('todayPercent').textContent=pct+'%';document.getElementById('todayProgressFill').style.width=pct+'%';document.getElementById('todayLead').textContent=!items.length?'Không có habit được lên lịch hôm nay':pct===100?'Hoàn thành toàn bộ lịch hôm nay.':`${done}/${items.length} habit đã hoàn thành.`;const box=document.getElementById('todayList');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty-state">Hôm nay là ngày nghỉ. Bạn có thể dùng thời gian này để hồi phục.</div>';return}items.forEach(h=>{const div=document.createElement('div');div.className='focus-item';div.onclick=()=>cycleCell(h,s);const c=document.createElement('span');c.className='heat'+(isDone(h,s)?' done':'')+(isSkipped(h,s)?' skipped':'');const name=document.createElement('span');name.textContent=h.name;const state=document.createElement('span');state.className='mini-state';state.textContent=isDone(h,s)?'DONE':isSkipped(h,s)?'SKIP':`${habitCurrentStreak(h)}d streak`;div.append(c,name,state);box.appendChild(div)})}
+function renderBrief(){const today=new Date(),items=habits.filter(h=>isScheduled(h,today)),done=items.filter(h=>isDone(h,formatDate(today))).length,pct=items.length?Math.round(done/items.length*100):0,rem=items.length-done;document.getElementById('briefRemaining').textContent=rem;document.getElementById('briefDone').textContent=pct+'%';const lead=document.getElementById('briefLead'),copy=document.getElementById('briefCopy');if(!items.length){lead.textContent='Hôm nay không có lịch habit.';copy.textContent='Một ngày nghỉ hợp lệ vẫn là một phần của kế hoạch.'}else if(pct===100){lead.textContent='Clean run.';copy.textContent='Tất cả habit hôm nay đã hoàn thành.'}else if(pct>=50){lead.textContent=`Bạn đã đi được ${pct}% hôm nay.`;copy.textContent=`Còn ${rem} habit trong lịch. Giữ nhịp thêm một chút.`}else{lead.textContent='Bắt đầu từ một việc nhỏ.';copy.textContent=`Đã hoàn thành ${done}/${items.length} habit hôm nay.`}}
+function renderBestHabit(){const box=document.getElementById('bestHabitBox');if(!habits.length){box.textContent='Chưa có đủ dữ liệu.';return}const s=getWeekStats();const best=s.per.slice().sort((a,b)=>b.percent-a.percent)[0];box.textContent=`${best.habit.name}: ${best.percent}% tuần này · current streak ${habitCurrentStreak(best.habit)} ngày · best ${habitBestStreak(best.habit)} ngày.`}
+function openCreateHabit(){editingHabitId=null;document.getElementById('modalTitle').textContent='Tạo habit';document.getElementById('modalSub').textContent='Chọn ngày hoặc số lần mỗi tuần.';document.getElementById('modalHabitName').value=document.getElementById('habitInput').value.trim();buildDayOptions([1,2,3,4,5,6,7]);document.getElementById('frequencyMode').value='days';document.getElementById('weeklyTarget').value='7';syncFrequencyUI();document.getElementById('habitModal').classList.add('open');setTimeout(()=>document.getElementById('modalHabitName').focus(),0)}
+function openEditHabit(id){const h=habits.find(x=>x.id===id);if(!h)return;editingHabitId=id;document.getElementById('modalTitle').textContent='Sửa habit';document.getElementById('modalSub').textContent='Thay đổi lịch mà không mất lịch sử.';document.getElementById('modalHabitName').value=h.name;const s=h.schedule||{mode:'days',days:[1,2,3,4,5,6,7],target:7};buildDayOptions(s.days);document.getElementById('frequencyMode').value=s.mode;document.getElementById('weeklyTarget').value=s.target||7;syncFrequencyUI();document.getElementById('habitModal').classList.add('open')}
+function buildDayOptions(selected){const wrap=document.getElementById('dayOptions');wrap.innerHTML='';[['T2',1],['T3',2],['T4',3],['T5',4],['T6',5],['T7',6],['CN',7]].forEach(([label,val])=>{const b=document.createElement('button');b.type='button';b.className='day-toggle'+(selected.includes(val)?' selected':'');b.textContent=label;b.dataset.day=val;b.onclick=()=>b.classList.toggle('selected');wrap.appendChild(b)})}
+function syncFrequencyUI(){const mode=document.getElementById('frequencyMode').value;document.querySelectorAll('.day-toggle').forEach(b=>b.style.opacity=mode==='days'?'1':'.45');document.getElementById('weeklyTarget').disabled=mode!=='weekly'}
+function saveHabitModal(){const name=document.getElementById('modalHabitName').value.trim();if(!name)return;const mode=document.getElementById('frequencyMode').value,days=[...document.querySelectorAll('.day-toggle.selected')].map(b=>Number(b.dataset.day)),target=Number(document.getElementById('weeklyTarget').value);if(mode==='days'&&!days.length){alert('Hãy chọn ít nhất một ngày.');return}const schedule={mode,days:mode==='days'?days:[1,2,3,4,5,6,7],target};if(editingHabitId){const h=habits.find(x=>x.id===editingHabitId);h.name=name;h.schedule=schedule}else habits.push({id:uid(),name,schedule});saveData();closeHabitModal();document.getElementById('habitInput').value='';renderApp()}
+function closeHabitModal(){document.getElementById('habitModal').classList.remove('open')}
+function backdropClose(e){if(e.target.id==='habitModal')closeHabitModal()}
+document.getElementById('frequencyMode').addEventListener('change',syncFrequencyUI)
+function renderCalendar(){const dates=getWeekDates(),end=dates[6];document.getElementById('weekDisplay').innerHTML=`${dates[0].toLocaleDateString('vi-VN')} — ${end.toLocaleDateString('vi-VN')}<small>${dates.some(isToday)?'TUẦN HIỆN TẠI':'TUẦN ĐÃ CHỌN'}</small>`;const th=document.getElementById('habitHead');th.innerHTML='';const lead=document.createElement('th');lead.className='text-left habit-name-cell';lead.textContent='HABIT';th.appendChild(lead);dates.forEach(d=>{const cell=document.createElement('th');if(isToday(d))cell.classList.add('today-col');cell.innerHTML=`${['CN','T2','T3','T4','T5','T6','T7'][d.getDay()]}<br><small>${d.getDate()}/${d.getMonth()+1}</small>`;if(isToday(d)){const badge=document.createElement('div');badge.className='today-badge';badge.textContent='HÔM NAY';cell.appendChild(badge)}th.appendChild(cell)});const body=document.getElementById('habitBody');body.innerHTML='';if(!habits.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=8;td.innerHTML='<div class="empty-state">CHƯA CÓ HABIT<br><span style="font-size:.82rem;color:var(--muted-2)">Tạo habit đầu tiên và chọn lịch của nó.</span></div>';tr.appendChild(td);body.appendChild(tr);return}habits.forEach(h=>{const tr=document.createElement('tr'),nameTd=document.createElement('td');nameTd.className='habit-name-cell';const wrap=document.createElement('div');wrap.className='habit-name-wrap';const info=document.createElement('div');const name=document.createElement('span');name.className='habit-name';name.textContent=h.name;name.title=h.name;const meta=document.createElement('div');meta.className='habit-meta';const pill=document.createElement('span');pill.className='meta-pill strong';pill.textContent= h.schedule?.mode==='weekly'?`${h.schedule.target||7}× / tuần`:`${(h.schedule?.days||[1,2,3,4,5,6,7]).length} ngày / tuần`;const streak=document.createElement('span');streak.className='meta-pill';streak.textContent=`${habitCurrentStreak(h)}d streak`;meta.append(pill,streak);info.append(name,meta);const actions=document.createElement('div');actions.className='habit-actions';const edit=document.createElement('button');edit.className='btn-danger';edit.textContent='SỬA';edit.onclick=()=>openEditHabit(h.id);const detail=document.createElement('button');detail.className='btn-danger';detail.textContent='CHI TIẾT';detail.onclick=()=>openDetail(h.id);const del=document.createElement('button');del.className='btn-danger';del.textContent='XÓA';del.onclick=()=>removeHabit(h.id);actions.append(edit,detail,del);wrap.append(info,actions);nameTd.appendChild(wrap);tr.appendChild(nameTd);dates.forEach(d=>{const td=document.createElement('td');if(isToday(d))td.classList.add('today-col');const date=formatDate(d),btn=document.createElement('button');btn.type='button';let cls='heat';if(isDone(h,date))cls+=' done';else if(isSkipped(h,date))cls+=' skipped';if(isToday(d))cls+=' today-ring';if(!isScheduled(h,d))cls+=' skipped';btn.className=cls;btn.title=isScheduled(h,d)?`${h.name} · ${date} · click: done / skip`:`${h.name} · ngày nghỉ theo lịch`;btn.onclick=()=>cycleCell(h,date);td.appendChild(btn);tr.appendChild(td)});body.appendChild(tr)})}
+function removeHabit(id){const h=habits.find(x=>x.id===id);if(!h)return;if(!confirm(`Xóa “${h.name}” và toàn bộ lịch sử?`))return;habits=habits.filter(x=>x.id!==id);for(const store of [habitRecords,habitSkips])Object.keys(store).forEach(k=>{if(k.startsWith(id+'_'))delete store[k]});saveData();renderApp()}
+function renderWeeklyStats(){const box=document.getElementById('weeklyStatsContainer'),s=getWeekStats(),donut=document.getElementById('overallDonut');box.innerHTML='';donut.style.setProperty('--p',s.percent+'%');donut.querySelector('span').textContent=s.percent+'%';document.getElementById('overallTitle').textContent=!habits.length?'Chưa có dữ liệu':s.percent>=80?'Tuần đang rất tốt':s.percent>=50?'Đang đi đúng hướng':'Có thể cải thiện';document.getElementById('overallDesc').textContent=habits.length?`${s.done} / ${s.possible} lượt theo lịch đã hoàn thành.`:'Thêm habit và bắt đầu đánh dấu.';s.per.forEach(({habit,done,possible,percent})=>{const block=document.createElement('div'),head=document.createElement('div'),bar=document.createElement('div'),fill=document.createElement('div');block.className='progress-block';head.className='progress-header';const n=document.createElement('span');n.textContent=habit.name;const m=document.createElement('span');m.textContent=`${percent}% · ${done}/${possible}`;head.append(n,m);bar.className='progress-bar';fill.className='progress-fill';fill.style.width=percent+'%';bar.appendChild(fill);block.append(head,bar);box.appendChild(block)})}
+function renderActivity(){const box=document.getElementById('activityGraph');box.innerHTML='';const ds=getWeekDates();ds.forEach((d)=>{const scheduled=habits.filter(h=>isScheduled(h,d)),done=scheduled.filter(h=>isDone(h,formatDate(d))).length,pct=scheduled.length?Math.round(done/scheduled.length*100):0,col=document.createElement('div'),value=document.createElement('div'),wrap=document.createElement('div'),bar=document.createElement('div'),label=document.createElement('div');col.className='graph-col';value.className='graph-value';value.textContent=pct+'%';wrap.className='graph-bar-wrap';bar.className='graph-bar'+(isToday(d)?' today':'');bar.style.height=`${Math.max(3,pct)}%`;wrap.appendChild(bar);label.className='graph-label';label.textContent=['CN','T2','T3','T4','T5','T6','T7'][d.getDay()];col.append(value,wrap,label);box.appendChild(col)})}
+function calculateCustomStats(){const a=document.getElementById('customStart').value,b=document.getElementById('customEnd').value,c=document.getElementById('customStatsResult');if(!a||!b){c.innerHTML='<div class="empty-state">Vui lòng chọn đủ hai mốc thời gian.</div>';return}const start=parseLocalDate(a),end=parseLocalDate(b);if(start>end){c.innerHTML='<div class="empty-state">Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.</div>';return}if(!habits.length){c.innerHTML='<div class="empty-state">Chưa có habit để phân tích.</div>';return}c.innerHTML='';habits.forEach(h=>{const ds=scheduledDates(h,start,end),done=ds.filter(s=>isDone(h,s)).length,p=ds.length?Math.round(done/ds.length*100):100;const block=document.createElement('div'),head=document.createElement('div'),bar=document.createElement('div'),fill=document.createElement('div');block.className='progress-block';head.className='progress-header';const n=document.createElement('span');n.textContent=h.name;const m=document.createElement('span');m.textContent=`${p}% · ${done}/${ds.length}`;head.append(n,m);bar.className='progress-bar';fill.className='progress-fill';fill.style.width=p+'%';bar.appendChild(fill);block.append(head,bar);c.appendChild(block)})}
+function addTodo(){const taskInput=document.getElementById('todoTask'),noteInput=document.getElementById('todoNote'),task=taskInput.value.trim();if(!task)return;todos.push({id:uid(),task,note:noteInput.value.trim(),done:false});taskInput.value='';noteInput.value='';saveData();renderTodos();updateSummary();taskInput.focus()}
+function toggleTodo(id){const t=todos.find(x=>x.id===id);if(!t)return;t.done=!t.done;saveData();renderTodos();updateSummary()}
+function removeTodo(id){const t=todos.find(x=>x.id===id);if(!t)return;if(!confirm(`Xóa nhiệm vụ “${t.task}”?`))return;todos=todos.filter(x=>x.id!==id);saveData();renderTodos();updateSummary()}
+function setTodoFilter(f){todoFilter=f;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));renderTodos()}
+function renderTodos(){const box=document.getElementById('todoBody');box.innerHTML='';const list=todos.filter(t=>todoFilter==='all'||todoFilter==='active'&&!t.done||todoFilter==='done'&&t.done).sort((a,b)=>Number(a.done)-Number(b.done));if(!list.length){box.innerHTML='<div class="empty-state">Không có nhiệm vụ trong bộ lọc này.</div>';return}list.forEach(t=>{const item=document.createElement('div');item.className='todo-item'+(t.done?' done':'');const cb=document.createElement('input');cb.type='checkbox';cb.className='retro-checkbox';cb.checked=t.done;cb.onchange=()=>toggleTodo(t.id);const content=document.createElement('div');content.className='todo-content';const task=document.createElement('span');task.className='todo-text';task.textContent=t.task;content.appendChild(task);if(t.note){const note=document.createElement('span');note.className='todo-note';note.textContent='>> '+t.note;content.appendChild(note)}const del=document.createElement('button');del.className='btn-danger';del.textContent='XÓA';del.onclick=()=>removeTodo(t.id);item.append(cb,content,del);box.appendChild(item)})}
+function openDetail(id){const h=habits.find(x=>x.id===id);if(!h)return;detailHabitId=id;document.getElementById('detailTitle').textContent=h.name;document.getElementById('detailSub').textContent=h.schedule?.mode==='weekly'?`${h.schedule.target||7}× / tuần`:`${(h.schedule?.days||[]).map(d=>['CN','T2','T3','T4','T5','T6','T7'][d]).join(' · ')}`;document.getElementById('detailCurrent').textContent=habitCurrentStreak(h);document.getElementById('detailBest').textContent=habitBestStreak(h);const now=new Date(),weekStart=getStartOfWeek(now),monthStart=new Date(now);monthStart.setDate(monthStart.getDate()-29);const ws=scheduledDates(h,weekStart,now),ms=scheduledDates(h,monthStart,now);document.getElementById('detailWeek').textContent=(ws.length?Math.round(ws.filter(x=>isDone(h,x)).length/ws.length*100):100)+'%';document.getElementById('detailMonth').textContent=(ms.length?Math.round(ms.filter(x=>isDone(h,x)).length/ms.length*100):100)+'%';const g=document.getElementById('detailGraph');g.innerHTML='';const start=new Date(now);start.setDate(start.getDate()-13);for(let i=0;i<14;i++){const d=new Date(start);d.setDate(d.getDate()+i);const s=formatDate(d),c=document.createElement('div');c.className='detail-cell'+(isDone(h,s)?' done':isSkipped(h,s)||!isScheduled(h,d)?' skip':'');c.title=s;g.appendChild(c)}document.getElementById('detailInsight').textContent=`Current streak ${habitCurrentStreak(h)} ngày. Best streak ${habitBestStreak(h)} ngày. ${h.schedule?.mode==='weekly'?'Mục tiêu theo tuần.' : 'Các ngày không được lên lịch không bị tính là trượt.'}`;document.getElementById('detailModal').classList.add('open')}
+function closeDetail(){document.getElementById('detailModal').classList.remove('open')}
+function detailBackdropClose(e){if(e.target.id==='detailModal')closeDetail()}
+function exportData(){const data={version:3,exportedAt:new Date().toISOString(),habits,habitRecords,habitSkips,todos};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='system-tracker-backup.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
+document.getElementById('importFile').addEventListener('change',e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const d=JSON.parse(reader.result);if(!Array.isArray(d.habits)||typeof d.habitRecords!=='object'||!Array.isArray(d.todos))throw new Error();habits=migrateHabits(d.habits);habitRecords=d.habitRecords;habitSkips=d.habitSkips||{};todos=d.todos;saveData();goToToday()}catch{alert('File backup không hợp lệ.')}};reader.readAsText(file);e.target.value=''})
+function bindEnter(id,fn){document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();fn()}})}
+function renderLiveDate(){document.getElementById('liveDate').textContent=new Date().toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'})}
+function renderApp(){renderCalendar();renderWeeklyStats();renderActivity();renderTodos();updateSummary();const a=document.getElementById('customStart'),b=document.getElementById('customEnd');if(a.value&&b.value)calculateCustomStats()}
+bindEnter('habitInput',openCreateHabit);bindEnter('todoTask',addTodo);bindEnter('todoNote',addTodo);document.getElementById('modalHabitName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveHabitModal()}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeHabitModal();closeDetail()}});const today=formatDate(new Date());document.getElementById('customStart').max=today;document.getElementById('customEnd').max=today;renderLiveDate();renderApp();
 </script>
-
 </body>
 </html>
