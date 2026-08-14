@@ -1,349 +1,450 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="light">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng Điểm Phỏng Vấn Ban Tài chính - MCCM</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
+    <title>Quản lý Công việc & Thói quen (Dark Theme)</title>
     <style>
+        :root {
+            /* Bảng màu Dark Xám */
+            --primary: #52525b;       /* Xám nhấn cho nút bấm */
+            --primary-hover: #71717a; /* Xám sáng hơn khi di chuột vào nút */
+            --danger: #ef4444;        /* Đỏ cho nút xóa */
+            --danger-hover: #f87171;
+            --success: #10b981;       /* Xanh lá cho phần trăm hoàn thành */
+            
+            --bg: #121212;            /* Xám đen - Nền trang web */
+            --card: #1e1e1e;          /* Xám đậm - Nền các thẻ nội dung */
+            --text: #e5e5e5;          /* Xám trắng - Chữ chính */
+            --text-muted: #9ca3af;    /* Xám mờ - Chữ phụ, ghi chú */
+            
+            --border: #333333;        /* Xám viền */
+            --input-bg: #2d2d2d;      /* Xám nền ô nhập chữ */
+            --th-bg: #2a2a2a;         /* Xám nền tiêu đề bảng */
+        }
+        
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
         }
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
         }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+        h1, h2 { color: var(--text); }
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
         }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
+        
+        /* Bảng chung */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+        th, td {
+            border: 1px solid var(--border);
+            padding: 12px;
+            text-align: center;
         }
-        @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background-color: white;
-            }
-            .print-card {
-                border: 1px solid #e2e8f0 !important;
-                box-shadow: none !important;
-            }
+        th { 
+            background-color: var(--th-bg); 
+            color: var(--text);
+        }
+        .text-left { text-align: left; }
+        
+        /* Nút bấm & Input */
+        input[type="text"] {
+            padding: 8px 12px;
+            background-color: var(--input-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+            width: 200px;
+        }
+        input[type="text"]::placeholder {
+            color: var(--text-muted);
+        }
+        input[type="text"]:focus {
+            border-color: #71717a;
+        }
+        
+        button {
+            padding: 8px 16px;
+            background-color: var(--primary);
+            color: var(--text);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 500;
+        }
+        button:hover { background-color: var(--primary-hover); }
+        
+        button.danger { background-color: var(--danger); color: white; }
+        button.danger:hover { background-color: var(--danger-hover); }
+        
+        /* Điều khiển tuần */
+        .week-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .week-controls span { font-weight: bold; font-size: 1.1em; color: var(--text); }
+        
+        /* Thống kê - Biểu đồ tròn rỗng */
+        .stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 120px;
+        }
+        .donut-chart {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            /* Nền của biểu đồ trên nền tối */
+            background: conic-gradient(var(--success) var(--p, 0%), var(--border) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .donut-chart::before {
+            content: "";
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--card); /* Đục lỗ màu thẻ card để tạo hiệu ứng rỗng */
+            border-radius: 50%;
+        }
+        .donut-chart span {
+            position: relative;
+            font-weight: bold;
+            font-size: 14px;
+            color: var(--text);
+        }
+        .stat-name {
+            font-size: 0.9em;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Checkbox to */
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--success); /* Đổi màu tick sang xanh */
         }
     </style>
 </head>
-<body class="text-slate-800 transition-colors duration-200">
+<body>
 
-    <div class="min-h-screen flex flex-col">
-        <header class="bg-white border-b border-slate-200 py-4 px-6 no-print shadow-sm">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="bg-indigo-600 text-white p-2 rounded-xl flex items-center justify-center shadow-md">
-                        <span class="material-icons">event</span>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold tracking-tight text-slate-900">MCCM FINANCE INTERVIEW</h1>
-                        <p class="text-xs text-slate-500">Hệ thống Đánh giá & Chấm điểm Ứng viên - Ban Tài chính MCCM</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="exportToCSV()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm">
-                        <span class="material-icons text-sm">download</span> Xuất Excel (CSV)
-                    </button>
-                    <button onclick="window.print()" class="flex items-center gap-2 bg-indigo-800 hover:bg-indigo-900 text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm">
-                        <span class="material-icons text-sm">print</span> In Phiếu / Lưu PDF
-                    </button>
-                    <button onclick="resetAll()" class="flex items-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-medium px-4 py-2 rounded-lg transition border border-rose-200">
-                        <span class="material-icons text-sm">restart_alt</span> Đặt lại
-                    </button>
-                </div>
-            </div>
-        </header>
+<div class="container">
+    <h1>📝 Quản Lý Cá Nhân</h1>
 
-        <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- Left Side: Interactive Evaluation Grid (Span 8) -->
-            <div class="lg:col-span-8 space-y-6">
-                <!-- Candidate Info Card -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print-card">
-                    <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                        <span class="material-icons text-indigo-600">badge</span> Thông Tin Ứng Viên & Người Đánh Giá
-                    </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Tên Ứng Viên</label>
-                            <input type="text" id="cand-name" oninput="saveCandidateData()" placeholder="Nhập họ và tên..." class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:bg-white rounded-xl px-4 py-2.5 text-sm font-medium outline-none transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Người Phỏng Vấn (IV)</label>
-                            <input type="text" id="iv-name" oninput="saveCandidateData()" placeholder="Nhập tên người chấm..." class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:bg-white rounded-xl px-4 py-2.5 text-sm font-medium outline-none transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Ngày Phỏng Vấn</label>
-                            <input type="date" id="iv-date" onchange="saveCandidateData()" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:bg-white rounded-xl px-4 py-2.5 text-sm font-medium outline-none transition">
-                        </div>
-                    </div>
-                </div>
+    <!-- 1. BẢNG THEO DÕI CHỈ TIÊU (HABIT TRACKER) -->
+    <div class="card">
+        <h2>Theo dõi chỉ tiêu tuần</h2>
+        <div class="week-controls">
+            <button onclick="changeWeek(-1)">&#8592; Tuần trước</button>
+            <span id="weekDisplay">Tuần: ...</span>
+            <button onclick="changeWeek(1)">Tuần sau &#8594;</button>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <input type="text" id="habitInput" placeholder="Nhập tên chỉ tiêu mới...">
+            <button onclick="addHabit()">Thêm chỉ tiêu</button>
+        </div>
 
-                <!-- Part Section Selector -->
-                <div class="bg-white border border-slate-200 rounded-xl p-1.5 flex flex-wrap gap-1 no-print shadow-sm">
-                    <button onclick="switchTab('all')" id="tab-all" class="tab-btn flex-1 py-2 px-3 text-xs font-semibold rounded-lg transition bg-indigo-600 text-white shadow-sm">Tất cả (24 câu)</button>
-                    <button onclick="switchTab('part1')" id="tab-part1" class="tab-btn flex-1 py-2 px-3 text-xs font-semibold rounded-lg transition text-slate-600 hover:bg-slate-100">P.I: Công việc (x1)</button>
-                    <button onclick="switchTab('part2')" id="tab-part2" class="tab-btn flex-1 py-2 px-3 text-xs font-semibold rounded-lg transition text-slate-600 hover:bg-slate-100">P.II: Chuyên môn (x2)</button>
-                    <button onclick="switchTab('part3')" id="tab-part3" class="tab-btn flex-1 py-2 px-3 text-xs font-semibold rounded-lg transition text-slate-600 hover:bg-slate-100">P.III: Tình huống (x2)</button>
-                    <button onclick="switchTab('part4')" id="tab-part4" class="tab-btn flex-1 py-2 px-3 text-xs font-semibold rounded-lg transition text-slate-600 hover:bg-slate-100">P.IV: Câu hỏi phụ (x1)</button>
-                </div>
-
-                <!-- Detailed Sheet -->
-                <div id="questions-container" class="space-y-6">
-                    <!-- Dynamic Questions will be inserted here by JavaScript -->
-                </div>
-            </div>
-
-            <!-- Right Side: Real-time Evaluation Dashboard (Span 4) -->
-            <div class="lg:col-span-4 space-y-6">
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print-card sticky top-6">
-                    <h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center gap-2">
-                        <span class="material-icons text-indigo-600">dashboard</span> Bảng Điểm Tổng Hợp
-                    </h2>
-
-                    <!-- Final Result Circular/Box Display -->
-                    <div class="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100 mb-6">
-                        <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Điểm Trung Bình Trọng Số</div>
-                        <div id="display-score" class="text-5xl font-black text-slate-400 transition-colors duration-300">0.00</div>
-                        
-                        <!-- Status Badge -->
-                        <div class="mt-4 flex justify-center">
-                            <span id="display-status" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase bg-slate-200 text-slate-600 transition-all duration-300">
-                                <span class="material-icons text-sm">hourglass_empty</span> Chưa đánh giá
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Part Scores Rollup -->
-                    <div class="space-y-4 mb-6">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Điểm Thành Phần (Thang 10)</h3>
-                        
-                        <!-- Part 1 -->
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                            <div>
-                                <span class="text-xs font-bold text-slate-600 block">Phần I: Công việc (x1)</span>
-                                <span class="text-[10px] text-slate-400">Tỷ trọng: 16.7%</span>
-                            </div>
-                            <span id="score-p1" class="text-base font-bold text-slate-700">0.0</span>
-                        </div>
-
-                        <!-- Part 2 -->
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                            <div>
-                                <span class="text-xs font-bold text-slate-600 block">Phần II: Chuyên môn (x2)</span>
-                                <span class="text-[10px] text-slate-400">Tỷ trọng: 33.3%</span>
-                            </div>
-                            <span id="score-p2" class="text-base font-bold text-slate-700">0.0</span>
-                        </div>
-
-                        <!-- Part 3 -->
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                            <div>
-                                <span class="text-xs font-bold text-slate-600 block">Phần III: Tình huống (x2)</span>
-                                <span class="text-[10px] text-slate-400">Tỷ trọng: 33.3%</span>
-                            </div>
-                            <span id="score-p3" class="text-base font-bold text-slate-700">0.0</span>
-                        </div>
-
-                        <!-- Part 4 -->
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                            <div>
-                                <span class="text-xs font-bold text-slate-600 block">Phần IV: Câu hỏi phụ (x1)</span>
-                                <span class="text-[10px] text-slate-400">Tỷ trọng: 16.7%</span>
-                            </div>
-                            <span id="score-p4" class="text-base font-bold text-slate-700">0.0</span>
-                        </div>
-                    </div>
-
-                    <!-- Decision rules card -->
-                    <div class="bg-indigo-50/50 rounded-xl p-4 border border-indigo-100 text-xs text-indigo-800 space-y-2">
-                        <div class="font-bold flex items-center gap-1">
-                            <span class="material-icons text-sm">info</span> Quy chế tuyển chọn Ban Tài chính:
-                        </div>
-                        <ul class="list-disc pl-4 space-y-1">
-                            <li><strong class="text-emerald-700">Đỗ:</strong> Tổng điểm tích lũy đạt từ <strong>8.0 / 10</strong> trở lên.</li>
-                            <li><strong class="text-amber-700">Cân nhắc:</strong> Tổng điểm đạt trong khoảng từ <strong>5.0 - 7.9 / 10</strong>.</li>
-                            <li><strong class="text-rose-700">Trượt:</strong> Tổng điểm trung bình tích lũy dưới <strong>5.0 / 10</strong>.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Quick stats / progress bar -->
-                    <div class="mt-6 pt-4 border-t border-slate-100">
-                        <div class="flex justify-between text-xs font-semibold text-slate-500 mb-1">
-                            <span>Tiến độ chấm điểm</span>
-                            <span id="grading-progress">0 / 24 câu hỏi</span>
-                        </div>
-                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                            <div id="progress-bar" class="bg-indigo-600 h-full w-0 transition-all duration-300"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+        <div style="overflow-x: auto;">
+            <table id="habitTable">
+                <thead>
+                    <tr id="habitHead">
+                        <th class="text-left" style="width: 200px;">Chỉ tiêu</th>
+                        <!-- Ngày trong tuần sẽ được JS render ở đây -->
+                    </tr>
+                </thead>
+                <tbody id="habitBody">
+                    <!-- Dữ liệu chỉ tiêu sẽ nằm ở đây -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <script>
-        function calculateFinalScores() {
-            const parts = ['part1', 'part2', 'part3', 'part4'];
-            const partScores = {};
-            let gradedCount = 0;
+    <!-- 2. THỐNG KÊ (BIỂU ĐỒ TRÒN RỖNG) -->
+    <div class="card">
+        <h2>Thống kê tuần này</h2>
+        <div class="stats-grid" id="statsContainer">
+            <!-- Biểu đồ được JS render -->
+        </div>
+    </div>
 
-            parts.forEach(p => {
-                const filtered = QUESTIONS.filter(q => q.part === p);
-                const scores = filtered.map(q => q.score).filter(s => s !== null);
-                
-                gradedCount += scores.length;
-                
-                // SỬA LỖI TẠI ĐÂY: Tính trung bình cộng dựa trên TỔNG SỐ câu hỏi của phần đó (câu chưa chấm mặc định là 0đ)
-                const sum = filtered.reduce((acc, q) => acc + (q.score !== null ? q.score : 0), 0);
-                partScores[p] = sum / filtered.length;
+    <!-- 3. DANH SÁCH VIỆC CẦN LÀM (TO-DO LIST) -->
+    <div class="card">
+        <h2>Việc cần làm (To-Do List)</h2>
+        <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+            <input type="text" id="todoTask" placeholder="Việc cần làm..." style="flex: 2;">
+            <input type="text" id="todoNote" placeholder="Ghi chú thêm..." style="flex: 2;">
+            <button onclick="addTodo()" style="flex: 1;">Thêm việc</button>
+        </div>
+        
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="text-left">Việc cần làm</th>
+                        <th class="text-left">Ghi chú</th>
+                        <th>Trạng thái</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody id="todoBody">
+                    <!-- Dữ liệu To-do sẽ nằm ở đây -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- KHỞI TẠO DỮ LIỆU ---
+    let currentStartOfWeek = getStartOfWeek(new Date());
+    let habits = JSON.parse(localStorage.getItem('habits')) || [];
+    let habitRecords = JSON.parse(localStorage.getItem('habitRecords')) || {};
+    let todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+    // --- CÁC HÀM XỬ LÝ NGÀY THÁNG ---
+    function getStartOfWeek(date) {
+        let d = new Date(date);
+        let day = d.getDay();
+        let diff = d.getDate() - day + (day === 0 ? -6 : 1);
+        return new Date(d.setDate(diff));
+    }
+
+    function formatDate(date) {
+        return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    }
+
+    function getDayName(date) {
+        const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+        return days[date.getDay()];
+    }
+
+    function changeWeek(offset) {
+        currentStartOfWeek.setDate(currentStartOfWeek.getDate() + (offset * 7));
+        renderApp();
+    }
+
+    // --- HABIT TRACKER ---
+    function addHabit() {
+        const input = document.getElementById('habitInput');
+        const name = input.value.trim();
+        if (name) {
+            habits.push({ id: Date.now().toString(), name: name });
+            input.value = '';
+            saveData();
+            renderApp();
+        }
+    }
+
+    function removeHabit(id) {
+        if(confirm("Bạn có chắc muốn xóa chỉ tiêu này?")) {
+            habits = habits.filter(h => h.id !== id);
+            saveData();
+            renderApp();
+        }
+    }
+
+    function toggleHabit(habitId, dateStr) {
+        const key = `${habitId}_${dateStr}`;
+        habitRecords[key] = !habitRecords[key];
+        saveData();
+        renderStats();
+    }
+
+    // --- TO-DO LIST ---
+    function addTodo() {
+        const taskInput = document.getElementById('todoTask');
+        const noteInput = document.getElementById('todoNote');
+        if (taskInput.value.trim()) {
+            todos.push({
+                id: Date.now().toString(),
+                task: taskInput.value.trim(),
+                note: noteInput.value.trim(),
+                done: false
             });
+            taskInput.value = '';
+            noteInput.value = '';
+            saveData();
+            renderTodos();
+        }
+    }
 
-            // Update individual part displays
-            document.getElementById('score-p1').innerText = partScores['part1'].toFixed(1);
-            document.getElementById('score-p2').innerText = partScores['part2'].toFixed(1);
-            document.getElementById('score-p3').innerText = partScores['part3'].toFixed(1);
-            document.getElementById('score-p4').innerText = partScores['part4'].toFixed(1);
+    function toggleTodo(id) {
+        const todo = todos.find(t => t.id === id);
+        if (todo) {
+            todo.done = !todo.done;
+            saveData();
+            renderTodos();
+        }
+    }
 
-            // Weighted score formula
-            // Weight: Part 1 (x1), Part 2 (x2), Part 3 (x2), Part 4 (x1)
-            const weightedScore = (
-                (partScores['part1'] * 1) + 
-                (partScores['part2'] * 2) + 
-                (partScores['part3'] * 2) + 
-                (partScores['part4'] * 1)
-            ) / 6;
+    function removeTodo(id) {
+        todos = todos.filter(t => t.id !== id);
+        saveData();
+        renderTodos();
+    }
 
-            const scoreDisplay = document.getElementById('display-score');
-            const statusDisplay = document.getElementById('display-status');
+    // --- LƯU TRỮ ---
+    function saveData() {
+        localStorage.setItem('habits', JSON.stringify(habits));
+        localStorage.setItem('habitRecords', JSON.stringify(habitRecords));
+        localStorage.setItem('todos', JSON.stringify(todos));
+    }
 
-            if (gradedCount > 0) {
-                scoreDisplay.innerText = weightedScore.toFixed(2);
-                
-                // Colorize score text based on classification
-                if (weightedScore >= 8.0) {
-                    scoreDisplay.className = 'text-5xl font-black text-emerald-600 transition-colors duration-300';
-                    statusDisplay.innerHTML = '<span class="material-icons text-sm">check_circle</span> ĐỖ';
-                    statusDisplay.className = 'inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase bg-emerald-100 text-emerald-800 transition-all duration-300';
-                } else if (weightedScore >= 5.0) {
-                    scoreDisplay.className = 'text-5xl font-black text-amber-500 transition-colors duration-300';
-                    statusDisplay.innerHTML = '<span class="material-icons text-sm">schedule</span> CÂN NHẮC';
-                    statusDisplay.className = 'inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase bg-amber-100 text-amber-800 transition-all duration-300';
-                } else {
-                    scoreDisplay.className = 'text-5xl font-black text-rose-600 transition-colors duration-300';
-                    statusDisplay.innerHTML = '<span class="material-icons text-sm">cancel</span> TRƯỢT';
-                    statusDisplay.className = 'inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase bg-rose-100 text-rose-800 transition-all duration-300';
-                }
-            } else {
-                scoreDisplay.innerText = '0.00';
-                scoreDisplay.className = 'text-5xl font-black text-slate-400 transition-colors duration-300';
-                statusDisplay.innerHTML = '<span class="material-icons text-sm">hourglass_empty</span> Chưa đánh giá';
-                statusDisplay.className = 'inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase bg-slate-200 text-slate-600 transition-all duration-300';
-            }
+    // --- RENDER GIAO DIỆN ---
+    function renderApp() {
+        renderCalendarAndHabits();
+        renderStats();
+        renderTodos();
+    }
 
-            // Progress Indicators
-            document.getElementById('grading-progress').innerText = `${gradedCount} / 24 câu hỏi`;
-            const percent = (gradedCount / 24) * 100;
-            document.getElementById('progress-bar').style.width = `${percent}%`;
+    function renderCalendarAndHabits() {
+        let endOfWeek = new Date(currentStartOfWeek);
+        endOfWeek.setDate(currentStartOfWeek.getDate() + 6);
+        document.getElementById('weekDisplay').innerText = 
+            `Từ ${currentStartOfWeek.toLocaleDateString('vi-VN')} đến ${endOfWeek.toLocaleDateString('vi-VN')}`;
+
+        const thead = document.getElementById('habitHead');
+        thead.innerHTML = '<th class="text-left" style="width: 200px;">Chỉ tiêu</th>';
+        
+        let weekDates = [];
+        for (let i = 0; i < 7; i++) {
+            let d = new Date(currentStartOfWeek);
+            d.setDate(currentStartOfWeek.getDate() + i);
+            weekDates.push(d);
+            thead.innerHTML += `<th>${getDayName(d)}<br><small style="color: var(--text-muted);">${d.getDate()}/${d.getMonth()+1}</small></th>`;
         }
 
-        // Reset
-        function resetAll() {
-            if (confirm("Bạn có chắc chắn muốn đặt lại toàn bộ bảng điểm của ứng viên không?")) {
-                QUESTIONS.forEach(q => {
-                    q.score = null;
-                    q.note = '';
-                });
-                document.getElementById('cand-name').value = '';
-                document.getElementById('iv-name').value = '';
-                document.getElementById('iv-date').value = '';
-                localStorage.removeItem('mccm_event_candidate');
-                calculateFinalScores();
-                renderQuestions();
-            }
+        const tbody = document.getElementById('habitBody');
+        tbody.innerHTML = '';
+        
+        if (habits.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="color: var(--text-muted);">Chưa có chỉ tiêu nào. Hãy thêm ở trên!</td></tr>`;
         }
 
-        function exportToCSV() {
-            const candName = document.getElementById('cand-name').value || 'Chưa đặt tên';
-            const ivName = document.getElementById('iv-name').value || 'Chưa rõ';
-            const date = document.getElementById('iv-date').value || 'Chưa đặt';
+        habits.forEach(habit => {
+            let tr = document.createElement('tr');
             
-            // Recalculate average scores to get latest values
-            const p1Avg = document.getElementById('score-p1').innerText;
-            const p2Avg = document.getElementById('score-p2').innerText;
-            const p3Avg = document.getElementById('score-p3').innerText;
-            const p4Avg = document.getElementById('score-p4').innerText;
-            const totalScore = document.getElementById('display-score').innerText;
-            const finalStatus = document.getElementById('display-status').innerText.replace(/[^\w\sÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÂĐÊÔƠƯưăâđêôơư]/g, '').trim();
+            let tdName = document.createElement('td');
+            tdName.className = 'text-left';
+            tdName.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong>${habit.name}</strong>
+                    <button class="danger" style="padding: 2px 6px; font-size: 12px;" onclick="removeHabit('${habit.id}')">X</button>
+                </div>
+            `;
+            tr.appendChild(tdName);
 
-            let csvContent = "\uFEFF"; // Unicode BOM for Excel compatibility
-            csvContent += "BẢNG ĐIỂM CHI TIẾT PHỎNG VẤN BAN SỰ KIỆN (MCCM)\n";
-            csvContent += `Ứng viên,${candName}\n`;
-            csvContent += `Người chấm (IV),${ivName}\n`;
-            csvContent += `Ngày phỏng vấn,${date}\n`;
-            csvContent += `Tổng điểm trung bình trọng số,${totalScore}\n`;
-            csvContent += `Kết luận tuyển chọn,${finalStatus}\n\n`;
+            weekDates.forEach(date => {
+                let td = document.createElement('td');
+                let dateStr = formatDate(date);
+                let key = `${habit.id}_${dateStr}`;
+                let isChecked = habitRecords[key] ? 'checked' : '';
+                
+                td.innerHTML = `<input type="checkbox" ${isChecked} onchange="toggleHabit('${habit.id}', '${dateStr}')">`;
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+        });
+    }
 
-            csvContent += "Điểm thành phần:\n";
-            csvContent += `Phần I (Công việc),${p1Avg}\n`;
-            csvContent += `Phần II (Chuyên môn),${p2Avg}\n`;
-            csvContent += `Phần III (Tình huống),${p3Avg}\n`;
-            csvContent += `Phần IV (Câu hỏi phụ),${p4Avg}\n\n`;
+    function renderStats() {
+        const container = document.getElementById('statsContainer');
+        container.innerHTML = '';
 
-            csvContent += "BẢNG ĐIỂM CHI TIẾT TỪNG CÂU HỎI:\n";
-            csvContent += "STT,Câu hỏi,Điểm,Ghi chú của người phỏng vấn\n";
+        if (habits.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted);">Thêm chỉ tiêu để xem thống kê.</p>';
+            return;
+        }
 
-            QUESTIONS.forEach(q => {
-                const scoreText = q.score !== null ? q.score : "Chưa chấm";
-                const cleanQuestion = q.text.replace(/"/g, '""');
-                const cleanNote = q.note.replace(/"/g, '""');
-                csvContent += `${q.num},"${cleanQuestion}",${scoreText},"${cleanNote}"\n`;
+        let weekDatesStr = [];
+        for (let i = 0; i < 7; i++) {
+            let d = new Date(currentStartOfWeek);
+            d.setDate(currentStartOfWeek.getDate() + i);
+            weekDatesStr.push(formatDate(d));
+        }
+
+        habits.forEach(habit => {
+            let doneCount = 0;
+            weekDatesStr.forEach(dateStr => {
+                let key = `${habit.id}_${dateStr}`;
+                if (habitRecords[key]) doneCount++;
             });
 
-            // Trigger Download
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `Bang_diem_Su_kien_MCCM_${candName.replace(/\s+/g, '_')}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            let percentage = Math.round((doneCount / 7) * 100);
+
+            let statDiv = document.createElement('div');
+            statDiv.className = 'stat-item';
+            
+            statDiv.innerHTML = `
+                <div class="donut-chart" style="--p: ${percentage}%">
+                    <span>${percentage}%</span>
+                </div>
+                <div class="stat-name">${habit.name}</div>
+                <div style="font-size: 12px; color: var(--text-muted);">${doneCount}/7 ngày</div>
+            `;
+            container.appendChild(statDiv);
+        });
+    }
+
+    function renderTodos() {
+        const tbody = document.getElementById('todoBody');
+        tbody.innerHTML = '';
+
+        if (todos.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="color: var(--text-muted);">Chưa có việc nào trong danh sách.</td></tr>`;
         }
 
-        // Initialize App
-        window.onload = function() {
-            loadCandidateData();
-            calculateFinalScores();
-            renderQuestions();
-        }
-    </script>
+        todos.forEach(todo => {
+            let tr = document.createElement('tr');
+            let textStyle = todo.done ? 'text-decoration: line-through; color: var(--text-muted);' : '';
+            
+            tr.innerHTML = `
+                <td class="text-left" style="${textStyle}"><strong>${todo.task}</strong></td>
+                <td class="text-left" style="${textStyle}">${todo.note}</td>
+                <td>
+                    <input type="checkbox" ${todo.done ? 'checked' : ''} onchange="toggleTodo('${todo.id}')">
+                </td>
+                <td>
+                    <button class="danger" onclick="removeTodo('${todo.id}')">Xóa</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    renderApp();
+</script>
+
 </body>
 </html>
